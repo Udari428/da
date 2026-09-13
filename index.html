@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Udari Upadya | Student Portfolio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: #243447;
+      background: #f7f9fc;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid #e5e9f0;
+      padding: 15px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-weight: 700; font-size: 1.2rem; }
+    nav a {
+      color: #243447;
+      text-decoration: none;
+      margin-left: 22px;
+      font-size: 0.95rem;
+    }
+    nav a:hover { color: #5b5bd6; }
+    .hero {
+      min-height: 72vh;
+      display: flex;
+      align-items: center;
+      padding: 70px 8%;
+      background: linear-gradient(135deg, #eef0ff, #f8fbff);
+    }
+    .hero-content { max-width: 800px; }
+    .tag {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 30px;
+      background: #ffffff;
+      color: #5b5bd6;
+      font-weight: 600;
+      margin-bottom: 18px;
+      border: 1px solid #e2e4ff;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 7vw, 4.8rem);
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .hero p { font-size: 1.15rem; max-width: 650px; color: #526173; }
+    .btn {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 12px 22px;
+      background: #5b5bd6;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    section { padding: 75px 8%; }
+    .section-title {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+    .section-title h2 { font-size: 2.1rem; margin-bottom: 8px; }
+    .section-title p { color: #697789; }
+    .about {
+      max-width: 850px;
+      margin: auto;
+      text-align: center;
+      font-size: 1.05rem;
+      color: #526173;
+    }
+    .education-grid {
+      max-width: 950px;
+      margin: auto;
+      display: grid;
+      gap: 22px;
+    }
+    .education-card {
+      background: white;
+      border: 1px solid #e6eaf0;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(30,50,80,0.06);
+      transition: transform .2s ease;
+    }
+    .education-card:hover { transform: translateY(-4px); }
+    .year {
+      color: #5b5bd6;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 7px;
+    }
+    .education-card h3 { margin-bottom: 5px; }
+    .education-card p { color: #667487; }
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      max-width: 850px;
+      margin: auto;
+    }
+    .skill {
+      background: white;
+      border: 1px solid #e1e6ee;
+      border-radius: 30px;
+      padding: 10px 17px;
+    }
+    .goals {
+      max-width: 850px;
+      margin: auto;
+      display: grid;
+      gap: 18px;
+    }
+    .goal {
+      background: white;
+      border-left: 5px solid #5b5bd6;
+      padding: 20px 24px;
+      border-radius: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 30px 8%;
+      background: #202936;
+      color: #dce2ea;
+    }
+    @media (max-width: 650px) {
+      nav { flex-direction: column; gap: 8px; }
+      nav a { margin: 0 7px; }
+      .hero { min-height: 65vh; }
+      section { padding: 60px 6%; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="logo">Udari's Portfolio</div>
+    <div>
+      <a href="#about">About</a>
+      <a href="#education">Education</a>
+      <a href="#skills">Skills</a>
+      <a href="#goals">Goals</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-content">
+      <span class="tag">Student Portfolio</span>
+      <h1>Hathamuni Gamage<br>Udari Upadya Lakmali</h1>
+      <p>
+        Integrated Business Management student at Dong-A University,
+        interested in business, communication, personal development,
+        and building a meaningful future through education.
+      </p>
+      <a class="btn" href="#education">Explore My Education</a>
+    </div>
+  </header>
+
+  <section id="about">
+    <div class="section-title">
+      <h2>About Me</h2>
+      <p>A little introduction</p>
+    </div>
+    <div class="about">
+      I am an international student from Sri Lanka currently studying
+      Integrated Business Management at Dong-A University in Busan, South Korea.
+      I enjoy learning about business and developing practical skills that can
+      support my future career. My university experience is helping me improve
+      my knowledge, communication skills, confidence, and understanding of
+      different cultures.
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="section-title">
+      <h2>Education</h2>
+      <p>My academic journey</p>
+    </div>
+
+    <div class="education-grid">
+      <div class="education-card">
+        <div class="year">2026 – Present</div>
+        <h3>Dong-A University</h3>
+        <p><strong>Department:</strong> Integrated Business Management</p>
+        <p>Busan, South Korea</p>
+        <p>
+          Currently developing knowledge in business, economics, management,
+          communication, and other areas related to the business world.
+        </p>
+      </div>
+
+      <div class="education-card">
+        <div class="year">2024</div>
+        <h3>School Education</h3>
+        <p>Kegalle St. Joseph’s College, Sri Lanka</p>
+        <p>
+          Completed secondary school education and developed a foundation
+          for further academic and professional growth.
+        </p>
+      </div>
+
+      <div class="education-card">
+        <div class="year">Additional Education</div>
+        <h3>Professional & IT Learning</h3>
+        <p>
+          University of Colombo – IT course<br>
+          CIPM – Advanced Certificate in Human Resource Management<br>
+          University of Peradeniya – Professional English course<br>
+          AAT – Level 1
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="section-title">
+      <h2>Skills & Interests</h2>
+      <p>Areas I am developing</p>
+    </div>
+    <div class="skills">
+      <span class="skill">Business Communication</span>
+      <span class="skill">English</span>
+      <span class="skill">Information Technology</span>
+      <span class="skill">Human Resource Management</span>
+      <span class="skill">Teamwork</span>
+      <span class="skill">Communication</span>
+      <span class="skill">Problem Solving</span>
+      <span class="skill">Business Studies</span>
+      <span class="skill">Cross-Cultural Learning</span>
+    </div>
+  </section>
+
+  <section id="goals">
+    <div class="section-title">
+      <h2>My Goals</h2>
+      <p>Where I want my education to take me</p>
+    </div>
+
+    <div class="goals">
+      <div class="goal">
+        <strong>Academic Goal:</strong>
+        Maintain strong academic performance and continuously improve my
+        knowledge and practical business skills.
+      </div>
+      <div class="goal">
+        <strong>Career Goal:</strong>
+        Gain practical business experience and develop the skills needed
+        to become a capable business professional.
+      </div>
+      <div class="goal">
+        <strong>Future Goal:</strong>
+        Use my education and experience to build my own business and create
+        opportunities for myself and others.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Udari Upadya Lakmali | Student Portfolio</p>
+    <p>Dong-A University · Integrated Business Management</p>
+  </footer>
+</body>
+</html>
