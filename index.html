@@ -1,275 +1,1205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Udari Upadya | Student Portfolio</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.6;
-      color: #243447;
-      background: #f7f9fc;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Udari's Portfolio</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    scroll-behavior:smooth;
+}
+
+:root{
+    --navy:#172c50;
+    --blue:#4c6edb;
+    --light-blue:#eaf4ff;
+    --pink:#f9e7f0;
+    --purple:#eee9ff;
+    --green:#e7f7ed;
+    --yellow:#fff4c9;
+    --white:#ffffff;
+    --text:#243758;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    color:var(--text);
+    background:#fffdfb;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+
+    height:72px;
+
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(12px);
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 5%;
+
+    box-shadow:0 2px 15px rgba(20,40,80,.08);
+}
+
+.logo{
+    font-family:'Caveat',cursive;
+    font-size:29px;
+    font-weight:700;
+    color:var(--navy);
+}
+
+.logo span{
+    color:#8c91e8;
+}
+
+.nav-links{
+    display:flex;
+    gap:28px;
+    list-style:none;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--text);
+    font-size:13px;
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:var(--blue);
+}
+
+.nav-icons{
+    display:flex;
+    gap:5px;
+    background:#f1f3f8;
+    border-radius:30px;
+    padding:5px 10px;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    min-height:430px;
+
+    background:
+    linear-gradient(
+        rgba(214,238,255,.8),
+        rgba(255,247,244,.85)
+    );
+
+    position:relative;
+    overflow:hidden;
+
+    display:grid;
+    grid-template-columns:38% 62%;
+
+    align-items:center;
+
+    padding:30px 5%;
+}
+
+/* decorative flowers */
+
+.hero::before{
+    content:"🌸";
+    position:absolute;
+    font-size:80px;
+    left:-10px;
+    top:20px;
+    opacity:.55;
+}
+
+.hero::after{
+    content:"🌸 🌿";
+    position:absolute;
+    font-size:55px;
+    right:-5px;
+    top:5px;
+    opacity:.65;
+}
+
+.hero-left{
+    position:relative;
+    z-index:2;
+}
+
+.photo-stack{
+    position:relative;
+    height:330px;
+}
+
+.photo{
+    position:absolute;
+    background:white;
+    padding:8px;
+    box-shadow:0 8px 25px rgba(30,50,90,.18);
+}
+
+.photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.photo.one{
+    width:190px;
+    height:225px;
+    left:20px;
+    top:25px;
+    transform:rotate(-9deg);
+}
+
+.photo.two{
+    width:145px;
+    height:180px;
+    left:180px;
+    top:65px;
+    transform:rotate(7deg);
+}
+
+.photo.three{
+    width:150px;
+    height:150px;
+    left:100px;
+    top:180px;
+    transform:rotate(-5deg);
+}
+
+.photo.one img{
+    background:
+    linear-gradient(135deg,#8bc7f5,#f8c8d8);
+}
+
+.photo.two img{
+    background:
+    linear-gradient(135deg,#f8d7aa,#a8d6f3);
+}
+
+.photo.three img{
+    background:
+    linear-gradient(135deg,#d7c6f4,#9dd7cf);
+}
+
+.small-note{
+    position:absolute;
+    z-index:4;
+
+    background:#fffdf5;
+    padding:13px;
+
+    width:105px;
+
+    font-family:'Caveat',cursive;
+    font-size:20px;
+    line-height:1.1;
+
+    box-shadow:0 5px 15px rgba(30,50,80,.12);
+
+    transform:rotate(-4deg);
+
+    left:5px;
+    bottom:15px;
+}
+
+.hero-right{
+    position:relative;
+    z-index:2;
+    padding-left:30px;
+}
+
+.hello{
+    font-family:'Caveat',cursive;
+    font-size:27px;
+}
+
+.hero h1{
+    font-family:'Caveat',cursive;
+    font-size:53px;
+    line-height:1.0;
+    color:var(--navy);
+    margin:5px 0 14px;
+}
+
+.hero-sub{
+    font-size:16px;
+    line-height:1.7;
+    margin-bottom:15px;
+}
+
+.country{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    font-weight:600;
+    margin:14px 0;
+}
+
+.arrow{
+    font-size:27px;
+}
+
+.hero-btn{
+    display:inline-block;
+    background:#526ed5;
+    color:white;
+    text-decoration:none;
+
+    padding:12px 24px;
+    border-radius:30px;
+
+    font-size:14px;
+    font-weight:600;
+
+    box-shadow:0 6px 14px rgba(76,110,219,.25);
+}
+
+.hero-btn:hover{
+    transform:translateY(-2px);
+}
+
+/* ================= GENERAL ================= */
+
+.container{
+    width:92%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.section{
+    padding:25px 0;
+}
+
+.section-title{
+    font-family:'Caveat',cursive;
+    font-size:34px;
+    color:var(--navy);
+    margin-bottom:15px;
+}
+
+.section-title::after{
+    content:"";
+    display:block;
+    width:75px;
+    height:4px;
+    background:#e7c968;
+    border-radius:10px;
+    margin-top:2px;
+}
+
+/* ================= ABOUT ================= */
+
+.about{
+    background:#fffaf8;
+}
+
+.about-box{
+    background:white;
+    border-radius:18px;
+
+    display:grid;
+    grid-template-columns:32% 43% 25%;
+
+    overflow:hidden;
+
+    box-shadow:0 5px 20px rgba(30,50,80,.07);
+}
+
+.about-image{
+    min-height:220px;
+
+    background:
+    linear-gradient(135deg,#d8edff,#ffe4d8);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:85px;
+}
+
+.about-text{
+    padding:28px;
+}
+
+.about-text p{
+    font-size:13px;
+    line-height:1.8;
+}
+
+.about-info{
+    background:#fbfbff;
+    padding:25px;
+}
+
+.info-item{
+    margin-bottom:17px;
+}
+
+.info-item strong{
+    display:block;
+    font-size:12px;
+}
+
+.info-item span{
+    font-size:11px;
+    color:#586784;
+}
+
+/* ================= EDUCATION ================= */
+
+.education{
+    background:#f2f8ff;
+    border-radius:20px;
+    padding:18px;
+}
+
+.edu-row{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:12px;
+}
+
+.edu-card{
+    background:white;
+    border-radius:13px;
+    min-height:155px;
+    padding:15px 10px;
+
+    text-align:center;
+
+    box-shadow:0 3px 12px rgba(50,80,130,.08);
+
+    position:relative;
+}
+
+.edu-card:not(:last-child)::after{
+    content:"›";
+
+    position:absolute;
+    right:-12px;
+    top:65px;
+
+    font-size:28px;
+    color:#4564bd;
+    font-weight:700;
+}
+
+.edu-icon{
+    font-size:27px;
+    margin-bottom:7px;
+}
+
+.edu-card h3{
+    font-size:11px;
+    color:#294a78;
+}
+
+.edu-card p{
+    font-size:9px;
+    margin-top:7px;
+    color:#53647e;
+}
+
+/* ================= THREE COLUMNS ================= */
+
+.three-columns{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:15px;
+}
+
+.panel{
+    border-radius:18px;
+    padding:20px;
+    min-height:300px;
+}
+
+.panel h2{
+    font-family:'Caveat',cursive;
+    font-size:29px;
+    margin-bottom:5px;
+    color:var(--navy);
+}
+
+.panel-sub{
+    font-size:10px;
+    color:#63718a;
+    margin-bottom:15px;
+}
+
+/* Skills */
+
+.skills-panel{
+    background:var(--purple);
+}
+
+.skills{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.skill{
+    background:rgba(255,255,255,.8);
+    padding:9px 5px;
+    border-radius:10px;
+    text-align:center;
+    font-size:9px;
+    font-weight:600;
+}
+
+/* Korea */
+
+.korea-panel{
+    background:#dff3f9;
+}
+
+.korea-image{
+    height:105px;
+    border-radius:12px;
+    background:
+    linear-gradient(
+        rgba(255,255,255,.05),
+        rgba(255,255,255,.05)
+    ),
+    linear-gradient(135deg,#7dc5ef,#b9e5d2,#ffd7c6);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:48px;
+
+    margin-bottom:12px;
+}
+
+.korea-list{
+    list-style:none;
+    font-size:10px;
+}
+
+.korea-list li{
+    margin:7px 0;
+}
+
+/* Global */
+
+.global-panel{
+    background:#f9e8f2;
+}
+
+.global-item{
+    display:flex;
+    gap:12px;
+    margin:15px 0;
+}
+
+.global-icon{
+    font-size:25px;
+}
+
+.global-item strong{
+    font-size:11px;
+}
+
+.global-item p{
+    font-size:9px;
+}
+
+/* ================= GOALS ================= */
+
+.goals-section{
+    background:#e4f6e9;
+    border-radius:20px;
+    padding:20px;
+}
+
+.goals-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:13px;
+}
+
+.goal{
+    background:rgba(255,255,255,.75);
+    padding:20px;
+    border-radius:14px;
+}
+
+.goal-icon{
+    font-size:26px;
+}
+
+.goal h3{
+    font-size:12px;
+    color:#34766a;
+    margin:7px 0;
+}
+
+.goal ul{
+    padding-left:16px;
+}
+
+.goal li{
+    font-size:9px;
+    margin:5px 0;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+    margin-top:20px;
+    background:var(--navy);
+    color:white;
+
+    padding:25px 5%;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.footer-name{
+    font-size:10px;
+}
+
+.footer-quote{
+    font-family:'Caveat',cursive;
+    font-size:25px;
+}
+
+.social{
+    font-size:18px;
+    letter-spacing:8px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:900px){
+
+    .nav-links{
+        gap:10px;
     }
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(255,255,255,0.96);
-      border-bottom: 1px solid #e5e9f0;
-      padding: 15px 8%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+
+    .hero{
+        grid-template-columns:1fr;
+        text-align:center;
     }
-    .logo { font-weight: 700; font-size: 1.2rem; }
-    nav a {
-      color: #243447;
-      text-decoration: none;
-      margin-left: 22px;
-      font-size: 0.95rem;
+
+    .hero-left{
+        display:none;
     }
-    nav a:hover { color: #5b5bd6; }
-    .hero {
-      min-height: 72vh;
-      display: flex;
-      align-items: center;
-      padding: 70px 8%;
-      background: linear-gradient(135deg, #eef0ff, #f8fbff);
+
+    .hero-right{
+        padding:20px;
     }
-    .hero-content { max-width: 800px; }
-    .tag {
-      display: inline-block;
-      padding: 7px 14px;
-      border-radius: 30px;
-      background: #ffffff;
-      color: #5b5bd6;
-      font-weight: 600;
-      margin-bottom: 18px;
-      border: 1px solid #e2e4ff;
+
+    .country{
+        justify-content:center;
     }
-    h1 {
-      font-size: clamp(2.4rem, 7vw, 4.8rem);
-      line-height: 1.05;
-      margin-bottom: 20px;
+
+    .about-box{
+        grid-template-columns:1fr;
     }
-    .hero p { font-size: 1.15rem; max-width: 650px; color: #526173; }
-    .btn {
-      display: inline-block;
-      margin-top: 28px;
-      padding: 12px 22px;
-      background: #5b5bd6;
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: 600;
+
+    .edu-row{
+        grid-template-columns:repeat(2,1fr);
     }
-    section { padding: 75px 8%; }
-    .section-title {
-      text-align: center;
-      margin-bottom: 45px;
+
+    .edu-card:not(:last-child)::after{
+        display:none;
     }
-    .section-title h2 { font-size: 2.1rem; margin-bottom: 8px; }
-    .section-title p { color: #697789; }
-    .about {
-      max-width: 850px;
-      margin: auto;
-      text-align: center;
-      font-size: 1.05rem;
-      color: #526173;
+
+    .three-columns{
+        grid-template-columns:1fr;
     }
-    .education-grid {
-      max-width: 950px;
-      margin: auto;
-      display: grid;
-      gap: 22px;
+
+    .goals-grid{
+        grid-template-columns:1fr 1fr;
     }
-    .education-card {
-      background: white;
-      border: 1px solid #e6eaf0;
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 8px 25px rgba(30,50,80,0.06);
-      transition: transform .2s ease;
+
+    footer{
+        flex-direction:column;
+        gap:10px;
+        text-align:center;
     }
-    .education-card:hover { transform: translateY(-4px); }
-    .year {
-      color: #5b5bd6;
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 7px;
+}
+
+@media(max-width:600px){
+
+    .navbar{
+        height:auto;
+        padding:12px;
+        flex-direction:column;
+        gap:8px;
     }
-    .education-card h3 { margin-bottom: 5px; }
-    .education-card p { color: #667487; }
-    .skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      max-width: 850px;
-      margin: auto;
+
+    .nav-links{
+        justify-content:center;
+        flex-wrap:wrap;
     }
-    .skill {
-      background: white;
-      border: 1px solid #e1e6ee;
-      border-radius: 30px;
-      padding: 10px 17px;
+
+    .hero h1{
+        font-size:43px;
     }
-    .goals {
-      max-width: 850px;
-      margin: auto;
-      display: grid;
-      gap: 18px;
+
+    .edu-row{
+        grid-template-columns:1fr;
     }
-    .goal {
-      background: white;
-      border-left: 5px solid #5b5bd6;
-      padding: 20px 24px;
-      border-radius: 10px;
+
+    .skills{
+        grid-template-columns:repeat(2,1fr);
     }
-    footer {
-      text-align: center;
-      padding: 30px 8%;
-      background: #202936;
-      color: #dce2ea;
+
+    .goals-grid{
+        grid-template-columns:1fr;
     }
-    @media (max-width: 650px) {
-      nav { flex-direction: column; gap: 8px; }
-      nav a { margin: 0 7px; }
-      .hero { min-height: 65vh; }
-      section { padding: 60px 6%; }
-    }
-  </style>
+}
+
+</style>
 </head>
 
 <body>
-  <nav>
-    <div class="logo">Udari's Portfolio</div>
-    <div>
-      <a href="#about">About</a>
-      <a href="#education">Education</a>
-      <a href="#skills">Skills</a>
-      <a href="#goals">Goals</a>
-    </div>
-  </nav>
 
-  <header class="hero">
-    <div class="hero-content">
-      <span class="tag">Student Portfolio</span>
-      <h1>Hathamuni Gamage<br>Udari Upadya Lakmali</h1>
-      <p>
-        Integrated Business Management student at Dong-A University,
-        interested in business, communication, personal development,
-        and building a meaningful future through education.
-      </p>
-      <a class="btn" href="#education">Explore My Education</a>
-    </div>
-  </header>
+<!-- ================= NAVBAR ================= -->
 
-  <section id="about">
-    <div class="section-title">
-      <h2>About Me</h2>
-      <p>A little introduction</p>
-    </div>
-    <div class="about">
-      I am an international student from Sri Lanka currently studying
-      Integrated Business Management at Dong-A University in Busan, South Korea.
-      I enjoy learning about business and developing practical skills that can
-      support my future career. My university experience is helping me improve
-      my knowledge, communication skills, confidence, and understanding of
-      different cultures.
-    </div>
-  </section>
+<nav class="navbar">
 
-  <section id="education">
-    <div class="section-title">
-      <h2>Education</h2>
-      <p>My academic journey</p>
+<div class="logo">
+    ✈️ Udari's Portfolio ♡
+</div>
+
+<ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#korea">Korea Journey</a></li>
+    <li><a href="#global">Global & Culture</a></li>
+    <li><a href="#goals">Goals</a></li>
+</ul>
+
+<div class="nav-icons">
+    ☀️ 🌙
+</div>
+
+</nav>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero" id="home">
+
+<div class="hero-left">
+
+<div class="photo-stack">
+
+<div class="photo one">
+    <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:55px;">
+        🌊🏙️
     </div>
+</div>
 
-    <div class="education-grid">
-      <div class="education-card">
-        <div class="year">2026 – Present</div>
-        <h3>Dong-A University</h3>
-        <p><strong>Department:</strong> Integrated Business Management</p>
-        <p>Busan, South Korea</p>
-        <p>
-          Currently developing knowledge in business, economics, management,
-          communication, and other areas related to the business world.
-        </p>
-      </div>
-
-      <div class="education-card">
-        <div class="year">2024</div>
-        <h3>School Education</h3>
-        <p>Kegalle St. Joseph’s College, Sri Lanka</p>
-        <p>
-          Completed secondary school education and developed a foundation
-          for further academic and professional growth.
-        </p>
-      </div>
-
-      <div class="education-card">
-        <div class="year">Additional Education</div>
-        <h3>Professional & IT Learning</h3>
-        <p>
-          University of Colombo – IT course<br>
-          CIPM – Advanced Certificate in Human Resource Management<br>
-          University of Peradeniya – Professional English course<br>
-          AAT – Level 1
-        </p>
-      </div>
+<div class="photo two">
+    <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;">
+        🌸🏛️
     </div>
-  </section>
+</div>
 
-  <section id="skills">
-    <div class="section-title">
-      <h2>Skills & Interests</h2>
-      <p>Areas I am developing</p>
+<div class="photo three">
+    <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:45px;">
+        🎓📚
     </div>
-    <div class="skills">
-      <span class="skill">Business Communication</span>
-      <span class="skill">English</span>
-      <span class="skill">Information Technology</span>
-      <span class="skill">Human Resource Management</span>
-      <span class="skill">Teamwork</span>
-      <span class="skill">Communication</span>
-      <span class="skill">Problem Solving</span>
-      <span class="skill">Business Studies</span>
-      <span class="skill">Cross-Cultural Learning</span>
-    </div>
-  </section>
+</div>
 
-  <section id="goals">
-    <div class="section-title">
-      <h2>My Goals</h2>
-      <p>Where I want my education to take me</p>
-    </div>
+<div class="small-note">
+    Small<br>
+    Steps<br>
+    Big<br>
+    Dreams ♡
+</div>
 
-    <div class="goals">
-      <div class="goal">
-        <strong>Academic Goal:</strong>
-        Maintain strong academic performance and continuously improve my
-        knowledge and practical business skills.
-      </div>
-      <div class="goal">
-        <strong>Career Goal:</strong>
-        Gain practical business experience and develop the skills needed
-        to become a capable business professional.
-      </div>
-      <div class="goal">
-        <strong>Future Goal:</strong>
-        Use my education and experience to build my own business and create
-        opportunities for myself and others.
-      </div>
-    </div>
-  </section>
+</div>
 
-  <footer>
-    <p>© 2026 Udari Upadya Lakmali | Student Portfolio</p>
-    <p>Dong-A University · Integrated Business Management</p>
-  </footer>
+</div>
+
+
+<div class="hero-right">
+
+<div class="hello">
+    Hello, I'm ♡
+</div>
+
+<h1>
+    Hathamuni Gamage<br>
+    Udari Upadya Lakmali
+</h1>
+
+<p class="hero-sub">
+    Integrated Business Management Student<br>
+    Dong-A University
+</p>
+
+<div class="country">
+    🇱🇰 Sri Lanka
+    <span class="arrow">→</span>
+    🇰🇷 South Korea
+</div>
+
+<a href="#about" class="hero-btn">
+    Explore My Journey&nbsp; →
+</a>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= ABOUT ================= -->
+
+<section class="section" id="about">
+
+<div class="container">
+
+<div class="about-box">
+
+<div class="about-image">
+    📚☕💻
+</div>
+
+<div class="about-text">
+
+<h2 class="section-title">
+    About Me
+</h2>
+
+<p>
+I am Hathamuni Gamage Udari Upadya Lakmali,
+a dedicated and enthusiastic student from Sri Lanka,
+currently studying Integrated Business Management
+at Dong-A University, Busan.
+</p>
+
+<br>
+
+<p>
+I am passionate about business, communication,
+personal development and creating a meaningful future
+through education.
+</p>
+
+<br>
+
+<p>
+I enjoy learning new things, exploring different cultures
+and challenging myself to become a better version of me.
+</p>
+
+</div>
+
+
+<div class="about-info">
+
+<div class="info-item">
+<strong>🎓 University</strong>
+<span>Dong-A University</span>
+</div>
+
+<div class="info-item">
+<strong>🏛️ Department</strong>
+<span>Integrated Business Management</span>
+</div>
+
+<div class="info-item">
+<strong>📍 Location</strong>
+<span>Busan, South Korea</span>
+</div>
+
+<div class="info-item">
+<strong>♡ Nationality</strong>
+<span>Sri Lankan</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= EDUCATION ================= -->
+
+<section class="section" id="education">
+
+<div class="container">
+
+<div class="education">
+
+<h2 class="section-title">
+    🎓 Education
+</h2>
+
+<p style="font-size:11px;margin-bottom:18px;">
+    My learning journey so far...
+</p>
+
+
+<div class="edu-row">
+
+<div class="edu-card">
+<div class="edu-icon">🏫</div>
+<h3>School</h3>
+<p>Kegalle St. Joseph's College</p>
+<p><b>Completed 2024</b></p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">📖</div>
+<h3>A/L (Arts Stream)</h3>
+<p>
+Geography - A<br>
+ICT - C<br>
+Economics - C
+</p>
+<p>Z Score - 1.1070</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">💻</div>
+<h3>IT Course</h3>
+<p>University of Colombo</p>
+<p>Completed</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">🧮</div>
+<h3>AAT Level 1</h3>
+<p>JMC</p>
+<p>2021</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">👥</div>
+<h3>HRM Certificate</h3>
+<p>CIPM</p>
+<p>2024</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">📄</div>
+<h3>Professional English</h3>
+<p>University of Peradeniya</p>
+<p>Before Korea</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">🎓</div>
+<h3>Dong-A University</h3>
+<p>Integrated Business Management</p>
+<p>2026 → ...</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= SKILLS / KOREA / GLOBAL ================= -->
+
+<section class="section">
+
+<div class="container">
+
+<div class="three-columns">
+
+
+<!-- SKILLS -->
+
+<div class="panel skills-panel" id="skills">
+
+<h2>💡 Skills & Interests</h2>
+
+<p class="panel-sub">
+Skills I've developed and things I love...
+</p>
+
+<div class="skills">
+
+<div class="skill">💼 Business</div>
+<div class="skill">💬 Communication</div>
+<div class="skill">🌐 English</div>
+
+<div class="skill">💻 IT & Technology</div>
+<div class="skill">👥 HRM</div>
+<div class="skill">🤝 Teamwork</div>
+
+<div class="skill">💡 Problem Solving</div>
+<div class="skill">🎨 Creativity</div>
+<div class="skill">🌱 Leadership</div>
+
+<div class="skill">📖 Reading</div>
+<div class="skill">✈️ Travel</div>
+<div class="skill">🎵 Music</div>
+
+</div>
+
+</div>
+
+
+<!-- KOREA -->
+
+<div class="panel korea-panel" id="korea">
+
+<h2>✈️ My Korea Journey</h2>
+
+<p class="panel-sub">
+A new chapter, new experiences...
+</p>
+
+<div class="korea-image">
+    🌊🏙️🌉
+</div>
+
+<ul class="korea-list">
+
+<li>🎓 Studying at Dong-A University</li>
+
+<li>🌏 International student experience</li>
+
+<li>🌸 Cross-cultural experience</li>
+
+<li>🗣️ Learning Korean language</li>
+
+</ul>
+
+<p style="font-family:'Caveat';font-size:18px;text-align:right;margin-top:8px;">
+조금씩, 더 나은 나로 ♡
+</p>
+
+</div>
+
+
+<!-- GLOBAL -->
+
+<div class="panel global-panel" id="global">
+
+<h2>🌎 Global & Culture</h2>
+
+<p class="panel-sub">
+Connecting people, cultures and ideas.
+</p>
+
+
+<div class="global-item">
+
+<div class="global-icon">💬</div>
+
+<div>
+<strong>Languages</strong>
+<p>
+Sinhala (Native) |
+English (Professional) |
+Korean (Beginner)
+</p>
+</div>
+
+</div>
+
+
+<div class="global-item">
+
+<div class="global-icon">👥</div>
+
+<div>
+<strong>Cross-cultural Experience</strong>
+<p>
+Adapting to a new country,
+learning from different cultures
+</p>
+</div>
+
+</div>
+
+
+<div class="global-item">
+
+<div class="global-icon">🌎</div>
+
+<div>
+<strong>Using My International Background</strong>
+<p>
+Bringing global perspectives,
+communication skills and cultural
+understanding to the business world.
+</p>
+</div>
+
+</div>
+
+<div style="font-size:45px;text-align:right;">
+    🌍✈️
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= GOALS ================= -->
+
+<section class="section">
+
+<div class="container">
+
+<div class="goals-section" id="goals">
+
+<h2 class="section-title">
+    🎯 My Goals
+</h2>
+
+<p style="font-size:11px;margin-bottom:15px;">
+    What I want to achieve...
+</p>
+
+
+<div class="goals-grid">
+
+
+<div class="goal">
+
+<div class="goal-icon">📖</div>
+
+<h3>
+Academic Goals
+</h3>
+
+<ul>
+<li>Maintain a high GPA</li>
+<li>Learn modern business strategies and skills</li>
+</ul>
+
+</div>
+
+
+<div class="goal">
+
+<div class="goal-icon">💼</div>
+
+<h3>
+Career Goals
+</h3>
+
+<ul>
+<li>Gain practical management experience</li>
+<li>Work in a company after graduation</li>
+<li>Pursue a Master's at Dong-A</li>
+</ul>
+
+</div>
+
+
+<div class="goal">
+
+<div class="goal-icon">🗓️</div>
+
+<h3>
+Short-Term Goals
+</h3>
+
+<ul>
+<li>Improve Korean language skills</li>
+<li>Get the best scholarship</li>
+<li>Build strong professional skills</li>
+</ul>
+
+</div>
+
+
+<div class="goal">
+
+<div class="goal-icon">📈</div>
+
+<h3>
+Long-Term Goals
+</h3>
+
+<ul>
+<li>Return to Sri Lanka</li>
+<li>Start a business consultancy</li>
+<li>Support small businesses</li>
+<li>Create opportunities for young entrepreneurs</li>
+</ul>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<div class="footer-name">
+    Udari Upadya Lakmali &nbsp; | &nbsp; Student Portfolio
+</div>
+
+<div class="footer-quote">
+    Dream · Learn · Grow · Make a Difference ♡
+</div>
+
+<div class="social">
+    in &nbsp; ◎ &nbsp; ✉
+</div>
+
+</footer>
+
+
 </body>
 </html>
