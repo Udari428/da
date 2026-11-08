@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Detectives — Reusable CSV Analysis Tool</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#dce3ed;--blue:#2457c5;--teal:#087e8b;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,Segoe UI,Arial}
+header{background:#102447;color:#fff;padding:24px clamp(16px,4vw,48px)}header h1{margin:0 0 5px;font-size:clamp(23px,3vw,34px)}header p{margin:0;color:#d8e5ff}
+main{max-width:1440px;margin:auto;padding:22px clamp(12px,3vw,32px) 50px}
+.notice{background:#fff8e7;border:1px solid #f2d58b;padding:12px 15px;border-radius:12px;margin-bottom:16px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}.tabs button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 13px;cursor:pointer;font-weight:650}.tabs button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.panel{display:none}.panel.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 2px 8px #18294b0a}
+h2{font-size:20px;margin:0 0 12px}h3{font-size:16px;margin:12px 0 8px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.field{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}.field label{font-size:12px;font-weight:700;color:var(--muted)}
+input,select,button,textarea{font:inherit}input,select,textarea{border:1px solid #cbd5e1;border-radius:8px;padding:9px;background:white;color:var(--ink)}button.action{background:var(--blue);color:white;border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:650}button.secondary{background:#edf2fa;color:#1e3a66;border:1px solid #d7e1f1;border-radius:8px;padding:9px 12px;cursor:pointer}button.danger{background:#fff0ef;color:var(--red);border:1px solid #f2c3bf;border-radius:8px;padding:9px 12px;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.kpi{background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:12px}.kpi b{display:block;font-size:22px}.kpi span{font-size:12px;color:var(--muted)}
+.tablewrap{overflow:auto;max-height:480px;border:1px solid var(--line);border-radius:10px;margin-top:10px}table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}th,td{padding:8px 10px;border-bottom:1px solid #e8edf4;text-align:left}th{position:sticky;top:0;background:#edf2f8;z-index:1}tr:nth-child(even) td{background:#fbfcfe}td input{min-width:110px;padding:5px;font-size:12px}
+.small{font-size:12px;color:var(--muted)}.good{color:#067647}.bad{color:var(--red)}.tag{display:inline-block;background:#eef3ff;border-radius:20px;padding:3px 8px;font-size:12px;margin:2px}
+canvas{width:100%;max-width:900px;height:300px;border:1px solid var(--line);border-radius:10px;background:#fff}
+pre{white-space:pre-wrap;background:#f5f7fa;padding:10px;border-radius:8px;overflow:auto}
+@media(max-width:650px){.field{min-width:100%}.tabs button{flex:1}}
+</style></head>
+<body>
+<header><h1>Data Detectives — CSV Analysis Tool</h1><p>Reusable tool for Assignment 1 and future datasets · Runs locally in your browser</p></header>
+<main>
+<div class="notice"><b>Important:</b> This tool does not change your original CSV file. Review every suggested correction before applying it. Keep your own evidence-based decisions and explain unresolved issues in your report.</div>
+<section class="card">
+<h2>1. Load dataset(s)</h2><div class="row">
+<div class="field"><label>Upload one or more CSV files</label><input id="files" type="file" accept=".csv,text/csv" multiple></div>
+<div class="field"><label>Active dataset</label><select id="dataset"></select></div>
+<button class="action" id="loadSample">Load selected uploaded file</button>
+</div><p class="small">Choose the main Resource Allocation file first. Supporting CSV files can also be loaded and inspected separately. Files stay in this browser session.</p>
+<div id="loadStatus" class="small"></div></section>
+<div class="tabs">
+<button class="active" data-tab="overview">T1 Overview</button><button data-tab="explore">T2 Explore</button><button data-tab="quality">T3 Data quality</button><button data-tab="stats">T4 Statistics</button><button data-tab="outliers">T5 Charts & outliers</button><button data-tab="export">T6 Export</button>
+</div>
+<section id="overview" class="panel active">
+<div class="card"><h2>Dataset overview</h2><div id="kpis" class="kpis"></div><h3>Suggested data types</h3><div id="types"></div><h3>Records preview</h3><div id="preview"></div></div>
+</section>
+<section id="explore" class="panel">
+<div class="card"><h2>Search, sort and filter</h2><div class="row">
+<div class="field"><label>Search all columns</label><input id="search" placeholder="Search text, ID, description, notes..."></div>
+<div class="field"><label>Filter column</label><select id="filterCol"></select></div>
+<div class="field"><label>Contains / equals</label><input id="filterVal" placeholder="Filter value"></div>
+<div class="field"><label>Sort by</label><select id="sortCol"></select></div>
+<div class="field"><label>Direction</label><select id="sortDir"><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
+<button class="secondary" id="clearExplore">Clear filters</button>
+</div><div id="exploreCount" class="small"></div><div id="exploreTable"></div></div>
+</section>
+<section id="quality" class="panel">
+<div class="card"><h2>Data quality checks</h2><p class="small">Checks include blank cells, duplicate rows, repeated ID values, conflicting ID records, invalid numeric values and unparseable date values.</p>
+<div class="row"><button class="action" id="runQuality">Run checks</button><button class="secondary" id="suggestRules">Preview safe text-trim rule</button><button class="secondary" id="applyRules">Apply approved preview</button></div>
+<div id="qualitySummary"></div><div id="qualityDetails"></div>
+<h3>Manual cell edit</h3><div class="row">
+<div class="field"><label>Row number (1-based data row)</label><input id="editRow" type="number" min="1" value="1"></div>
+<div class="field"><label>Column</label><select id="editCol"></select></div>
+<div class="field"><label>New value</label><input id="editValue"></div><button class="action" id="editApply">Apply edit</button>
+</div><p class="small">Every applied edit is recorded in the change log. Check the preview and document why a change is justified.</p>
+<div id="changePreview"></div>
+</div></section>
+<section id="stats" class="panel">
+<div class="card"><h2>Descriptive statistics</h2><div class="row">
+<div class="field"><label>Numeric column</label><select id="numericCol"></select></div><button class="action" id="calcStats">Calculate</button>
+</div><div id="statsResult"></div><p class="small">Mode can have more than one value. Standard deviation here is population standard deviation (divide by N).</p></div>
+</section>
+<section id="outliers" class="panel">
+<div class="card"><h2>Charts and 1.5 × IQR outliers</h2><div class="row">
+<div class="field"><label>Numeric column</label><select id="outlierCol"></select></div><button class="action" id="drawChart">Draw chart & calculate fences</button>
+</div><div id="outlierStats"></div><canvas id="chart" width="1000" height="340"></canvas>
+<p class="small">Quartiles use the inclusive method (linear interpolation with p × (n − 1)). Fences are Q1 − 1.5 × IQR and Q3 + 1.5 × IQR. The same original fences are used when comparing the data with and without outliers.</p></div>
+</section>
+<section id="export" class="panel">
+<div class="card"><h2>Export cleaned data and change log</h2><p>Export creates a new CSV. It does not overwrite the uploaded original.</p>
+<div class="row"><button class="action" id="exportClean">Download cleaned unique CSV</button><button class="action" id="exportLog">Download change log CSV</button><button class="secondary" id="exportBoth">Download both files</button></div>
+<div id="exportSummary"></div><p class="small">The cleaned export removes exact duplicate rows. Repeated IDs with different values are flagged for review, not silently deleted.</p></div>
+</section>
+<footer class="small">Data Detectives · General-purpose educational tool · Verify results independently before reporting.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let datasets=[], active=null, rows=[], originalRows=[], headers=[], changes=[], pending=[];
+function parseCSV(text){
+ let out=[], row=[], field='', q=false;
+ for(let i=0;i<text.length;i++){let c=text[i],n=text[i+1];
+  if(q){if(c=='"'&&n=='"'){field+='"';i++}else if(c=='"')q=false;else field+=c}
+  else{if(c=='"')q=true;else if(c==','){row.push(field);field=''}else if(c=='\n'){row.push(field);out.push(row);row=[];field=''}else if(c!='\r')field+=c}
+ }
+ if(field.length||row.length){row.push(field);out.push(row)}
+ if(!out.length)return {headers:[],rows:[]};
+ let hs=out.shift().map((x,i)=>x.trim()||`Column_${i+1}`);
+ return {headers:hs,rows:out.filter(r=>r.some(v=>String(v??'').trim()!=='')).map(r=>{let o={};hs.forEach((h,i)=>o[h]=r[i]??'');return o})};
+}
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function detectType(vals){
+ let a=vals.map(v=>String(v??'').trim()).filter(Boolean);if(!a.length)return 'unknown';
+ let nums=a.filter(v=>v!==''&&Number.isFinite(Number(v))).length;
+ let dates=a.filter(v=>!isNaN(Date.parse(v))).length;
+ if(nums/a.length>.9)return 'number';if(dates/a.length>.9)return 'date';return 'text';
+}
+function current(){return rows}
+function setActive(idx){
+ let d=datasets[idx];if(!d)return;active=d.name;headers=d.headers;originalRows=clone(d.rows);rows=clone(d.rows);changes=[];pending=[];
+ $('loadStatus').textContent=`Loaded ${active}: ${rows.length.toLocaleString()} rows, ${headers.length} columns.`;
+ refreshAll();
+}
+$('files').addEventListener('change',e=>{
+ datasets=[];[...e.target.files].forEach(f=>{let r=new FileReader();r.onload=()=>{let p=parseCSV(r.result);datasets.push({name:f.name,headers:p.headers,rows:p.rows});let opt=document.createElement('option');opt.value=datasets.length-1;opt.textContent=f.name;$('dataset').appendChild(opt);if(datasets.length===1)setActive(0)};r.readAsText(f)});
+ $('dataset').innerHTML='';$('loadStatus').textContent='Reading CSV files...';
+});
+$('dataset').addEventListener('change',e=>setActive(Number(e.target.value)));
+$('loadSample').onclick=()=>{if(datasets.length)setActive(Number($('dataset').value))};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab))});
+function table(data,editable=false){
+ if(!data.length)return '<p class="small">No records to display.</p>';
+ let hs=headers;return `<div class="tablewrap"><table><thead><tr>${hs.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${data.map(r=>`<tr>${hs.map(h=>`<td>${esc(r[h]??'')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fillSelect(id,opts){let el=$(id),old=el.value;el.innerHTML=opts.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');if(opts.includes(old))el.value=old}
+function refreshAll(){
+ if(!rows.length){$('kpis').innerHTML='<p>No records loaded.</p>';return}
+ $('kpis').innerHTML=[['Rows',rows.length],['Columns',headers.length],['Exact duplicate rows',exactDuplicates().length],['Logged changes',changes.length]].map(x=>`<div class="kpi"><b>${Number(x[1]).toLocaleString()}</b><span>${x[0]}</span></div>`).join('');
+ $('types').innerHTML='<div class="tablewrap"><table><tr><th>Column</th><th>Suggested type</th><th>Non-empty values</th></tr>'+headers.map(h=>`<tr><td>${esc(h)}</td><td>${detectType(rows.map(r=>r[h]))}</td><td>${rows.filter(r=>String(r[h]??'').trim()).length}</td></tr>`).join('')+'</table></div>';
+ $('preview').innerHTML=table(rows.slice(0,20));
+ ['filterCol','sortCol','editCol'].forEach(id=>fillSelect(id,headers));
+ let nums=headers.filter(h=>detectType(rows.map(r=>r[h]))==='number');fillSelect('numericCol',nums);fillSelect('outlierCol',nums);
+ renderExplore();runQuality();
+}
+function exactDuplicates(){let seen=new Set(),dups=[];rows.forEach((r,i)=>{let k=JSON.stringify(headers.map(h=>r[h]??''));if(seen.has(k))dups.push(i);else seen.add(k)});return dups}
+function renderExplore(){
+ if(!rows.length)return;
+ let q=$('search').value.toLowerCase(),fc=$('filterCol').value,fv=$('filterVal').value.toLowerCase(),sc=$('sortCol').value,dir=$('sortDir').value;
+ let a=rows.filter(r=>(!q||headers.some(h=>String(r[h]??'').toLowerCase().includes(q)))&&(!fv||String(r[fc]??'').toLowerCase().includes(fv)));
+ if(sc)a.sort((x,y)=>String(x[sc]??'').localeCompare(String(y[sc]??''),undefined,{numeric:true,sensitivity:'base'})*(dir==='asc'?1:-1));
+ $('exploreCount').textContent=`Showing ${a.length} of ${rows.length} records. Description and Notes fields are displayed in full.`;
+ $('exploreTable').innerHTML=table(a);
+}
+['search','filterVal','filterCol','sortCol','sortDir'].forEach(id=>$(id).addEventListener('input',renderExplore));
+$('clearExplore').onclick=()=>{$('search').value='';$('filterVal').value='';renderExplore()};
+function runQuality(){
+ if(!rows.length)return;
+ let blank=0;rows.forEach(r=>headers.forEach(h=>{if(String(r[h]??'').trim()==='')blank++}));
+ let dups=exactDuplicates(),idCol=headers.find(h=>/transaction.?id|record.?id|^id$/i.test(h));
+ let idGroups={};if(idCol)rows.forEach((r,i)=>{let k=String(r[idCol]??'').trim();if(k)(idGroups[k]??=[]).push(i)});
+ let repeated=Object.entries(idGroups).filter(([k,v])=>v.length>1);
+ let conflicts=repeated.filter(([k,inds])=>new Set(inds.map(i=>JSON.stringify(headers.filter(h=>h!==idCol).map(h=>rows[i][h])))).size>1);
+ let invalid=[];headers.forEach(h=>{let t=detectType(rows.map(r=>r[h]));if(t==='number')rows.forEach((r,i)=>{let v=String(r[h]??'').trim();if(v&&!Number.isFinite(Number(v)))invalid.push(`${h} row ${i+1}: ${v}`)});if(t==='date')rows.forEach((r,i)=>{let v=String(r[h]??'').trim();if(v&&isNaN(Date.parse(v)))invalid.push(`${h} row ${i+1}: ${v}`)})});
+ $('qualitySummary').innerHTML=`<div class="kpis">${[['Blank cells',blank],['Exact duplicate rows',dups.length],['Repeated ID values',repeated.length],['Conflicting IDs',conflicts.length],['Invalid typed values',invalid.length]].map(x=>`<div class="kpi"><b>${x[1]}</b><span>${x[0]}</span></div>`).join('')}</div>`;
+ $('qualityDetails').innerHTML=`<h3>Repeated IDs requiring review</h3><p>${repeated.length?repeated.map(([k,v])=>`<span class="tag">${esc(k)} (${v.length} rows)</span>`).join(' '):'No repeated ID values detected or no ID column identified.'}</p><h3>Conflicting IDs</h3><p>${conflicts.length?conflicts.map(([k,v])=>`<span class="tag">${esc(k)} (${v.length} rows)</span>`).join(' '):'None detected by this check.'}</p><h3>Invalid values (first 100)</h3><pre>${esc(invalid.slice(0,100).join('\\n')||'None detected by automatic type check.')}</pre>`;
+ $('editCol').innerHTML=headers.map(h=>`<option>${esc(h)}</option>`).join('');
+ $('changePreview').innerHTML=changes.length?`<p>${changes.length} change(s) recorded.</p><div class="tablewrap"><table><tr><th>Row</th><th>Column</th><th>Original</th><th>New</th><th>Method</th><th>Reason</th></tr>${changes.slice(-100).map(c=>`<tr>${[c.row,c.column,c.original,c.newValue,c.method,c.reason].map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table></div>`:'<p class="small">No changes recorded yet.</p>';
+}
+$('runQuality').onclick=runQuality;
+$('suggestRules').onclick=()=>{
+ pending=[];rows.forEach((r,i)=>headers.forEach(h=>{let v=String(r[h]??'');let n=v.trim();if(v!==n)pending.push({i,h,old:v,next:n})}));
+ $('changePreview').innerHTML=`<p><b>Preview only:</b> ${pending.length} cells would have leading/trailing whitespace removed. Nothing has changed yet.</p><div class="tablewrap"><table><tr><th>Row</th><th>Column</th><th>Original</th><th>Proposed</th></tr>${pending.slice(0,100).map(x=>`<tr><td>${x.i+1}</td><td>${esc(x.h)}</td><td>${esc(x.old)}</td><td>${esc(x.next)}</td></tr>`).join('')}</table></div>`;
+};
+$('applyRules').onclick=()=>{if(!pending.length){alert('Create a preview first.');return}if(!confirm(`Apply ${pending.length} whitespace-trim changes?`))return;pending.forEach(x=>{rows[x.i][x.h]=x.next;changes.push({row:x.i+1,column:x.h,original:x.old,newValue:x.next,method:'Automatic: trim whitespace',reason:'Standardised surrounding whitespace; content retained.'})});pending=[];refreshAll()};
+$('editApply').onclick=()=>{let i=Number($('editRow').value)-1,h=$('editCol').value,n=$('editValue').value;if(i<0||i>=rows.length||!h){alert('Choose a valid row and column.');return}let old=rows[i][h]??'';rows[i][h]=n;changes.push({row:i+1,column:h,original:old,newValue:n,method:'Manual edit',reason:'User-entered correction; document supporting evidence in report.'});refreshAll()};
+function numericVals(col){return rows.map(r=>Number(r[col])).filter((v,i)=>String(rows[i][col]??'').trim()!==''&&Number.isFinite(v))}
+function quantileInclusive(a,p){let s=[...a].sort((x,y)=>x-y);if(!s.length)return NaN;let pos=(s.length-1)*p,lo=Math.floor(pos),hi=Math.ceil(pos);return s[lo]+(s[hi]-s[lo])*(pos-lo)}
+function stats(a){
+ if(!a.length)return null;let s=[...a].sort((x,y)=>x-y),sum=a.reduce((x,y)=>x+y,0),freq=new Map();a.forEach(x=>freq.set(x,(freq.get(x)||0)+1));let maxf=Math.max(...freq.values());let modes=[...freq].filter(([k,v])=>v===maxf).map(([k])=>k);
+ let mean=sum/a.length,sd=Math.sqrt(a.reduce((z,x)=>z+(x-mean)**2,0)/a.length);
+ return {count:a.length,total:sum,mean,median:quantileInclusive(a,.5),mode:modes.join(', '),min:s[0],max:s[s.length-1],range:s[s.length-1]-s[0],populationSD:sd};
+}
+function statsHTML(s){return '<div class="tablewrap"><table><tr><th>Measure</th><th>Value</th></tr>'+Object.entries(s).map(([k,v])=>`<tr><td>${k}</td><td>${typeof v==='number'?v.toLocaleString(undefined,{maximumFractionDigits:4}):esc(v)}</td></tr>`).join('')+'</table></div>'}
+$('calcStats').onclick=()=>{let col=$('numericCol').value,a=numericVals(col),s=stats(a);$('statsResult').innerHTML=s?`<h3>${esc(col)}</h3>${statsHTML(s)}`:'No numeric values available.'};
+function drawBars(a){
+ let c=$('chart'),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);if(!a.length)return;
+ let bins=Math.min(20,Math.max(5,Math.ceil(Math.sqrt(a.length)))),mn=Math.min(...a),mx=Math.max(...a),w=mx-mn||1,counts=Array(bins).fill(0);
+ a.forEach(v=>counts[Math.min(bins-1,Math.floor((v-mn)/w*bins))]++);
+ let max=Math.max(...counts),pad=45,chartW=c.width-2*pad,chartH=c.height-75;
+ ctx.strokeStyle='#7d8da5';ctx.beginPath();ctx.moveTo(pad,20);ctx.lineTo(pad,c.height-45);ctx.lineTo(c.width-pad,c.height-45);ctx.stroke();
+ let bw=chartW/bins;counts.forEach((v,i)=>{let h=v/max*chartH;ctx.fillStyle='#3974d6';ctx.fillRect(pad+i*bw+2,c.height-45-h,bw-4,h)});
+ ctx.fillStyle='#172033';ctx.font='14px Arial';ctx.fillText('Frequency distribution (histogram)',pad,16);ctx.fillText(String(mn),pad,c.height-18);ctx.fillText(String(mx),c.width-pad-30,c.height-18);
+}
+$('drawChart').onclick=()=>{
+ let col=$('outlierCol').value,a=numericVals(col);if(!a.length){$('outlierStats').textContent='No numeric values.';return}
+ let q1=quantileInclusive(a,.25),q3=quantileInclusive(a,.75),iqr=q3-q1,lo=q1-1.5*iqr,hi=q3+1.5*iqr;
+ let out=a.filter(v=>v<lo||v>hi),inside=a.filter(v=>v>=lo&&v<=hi),sAll=stats(a),sIn=stats(inside);
+ $('outlierStats').innerHTML=`<p><b>Q1:</b> ${q1.toFixed(4)} · <b>Q3:</b> ${q3.toFixed(4)} · <b>IQR:</b> ${iqr.toFixed(4)} · <b>Lower fence:</b> ${lo.toFixed(4)} · <b>Upper fence:</b> ${hi.toFixed(4)} · <b>Outlier count:</b> ${out.length}</p><h3>Statistics including outliers</h3>${statsHTML(sAll)}<h3>Statistics excluding outliers (same fences)</h3>${statsHTML(sIn)}<p class="small">Outliers are flagged, not automatically deleted. Decide whether they are errors or valid extreme observations using context.</p>`;
+ drawBars(a);
+};
+function csvEscape(v){let s=String(v??'');return /[",\\n\\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+function download(name,content){let blob=new Blob([content],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+function csv(data,hs){return [hs.map(csvEscape).join(','),...data.map(r=>hs.map(h=>csvEscape(r[h])).join(','))].join('\\r\\n')}
+function cleaned(){let seen=new Set();return rows.filter(r=>{let k=JSON.stringify(headers.map(h=>r[h]??''));if(seen.has(k))return false;seen.add(k);return true})}
+$('exportClean').onclick=()=>{download('Resource_Allocation_Cleaned.csv',csv(cleaned(),headers));$('exportSummary').textContent=`Prepared ${cleaned().length} unique rows from ${rows.length} current rows.`};
+$('exportLog').onclick=()=>{let hs=['row','column','original','newValue','method','reason'];download('Change_Log.csv',csv(changes,hs));$('exportSummary').textContent=`Exported ${changes.length} logged changes.`};
+$('exportBoth').onclick=()=>{$('exportClean').click();$('exportLog').click()};
+</script></body></html>
