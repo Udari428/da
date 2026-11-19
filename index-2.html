@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Udari's Portfolio</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    scroll-behavior:smooth;
+}
+
+:root{
+    --navy:#172c50;
+    --blue:#4c6edb;
+    --light-blue:#eaf4ff;
+    --pink:#f9e7f0;
+    --purple:#eee9ff;
+    --green:#e7f7ed;
+    --yellow:#fff4c9;
+    --white:#ffffff;
+    --text:#243758;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    color:var(--text);
+    background:#fffdfb;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+
+    height:72px;
+
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(12px);
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 5%;
+
+    box-shadow:0 2px 15px rgba(20,40,80,.08);
+}
+
+.logo{
+    font-family:'Caveat',cursive;
+    font-size:29px;
+    font-weight:700;
+    color:var(--navy);
+}
+
+.logo span{
+    color:#8c91e8;
+}
+
+.nav-links{
+    display:flex;
+    gap:28px;
+    list-style:none;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--text);
+    font-size:13px;
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:var(--blue);
+}
+
+.nav-icons{
+    display:flex;
+    gap:5px;
+    background:#f1f3f8;
+    border-radius:30px;
+    padding:5px 10px;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    min-height:430px;
+
+    background:
+    linear-gradient(
+        rgba(214,238,255,.8),
+        rgba(255,247,244,.85)
+    );
+
+    position:relative;
+    overflow:hidden;
+
+    display:grid;
+    grid-template-columns:38% 62%;
+
+    align-items:center;
+
+    padding:30px 5%;
+}
+
+/* decorative flowers */
+
+.hero::before{
+    content:"🌸";
+    position:absolute;
+    font-size:80px;
+    left:-10px;
+    top:20px;
+    opacity:.55;
+}
+
+.hero::after{
+    content:"🌸 🌿";
+    position:absolute;
+    font-size:55px;
+    right:-5px;
+    top:5px;
+    opacity:.65;
+}
+
+.hero-left{
+    position:relative;
+    z-index:2;
+}
+
+.photo-stack{
+    position:relative;
+    height:330px;
+}
+
+.photo{
+    position:absolute;
+    background:white;
+    padding:8px;
+    box-shadow:0 8px 25px rgba(30,50,90,.18);
+}
+
+.photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.photo.one{
+    width:190px;
+    height:225px;
+    left:20px;
+    top:25px;
+    transform:rotate(-9deg);
+}
+
+.photo.two{
+    width:145px;
+    height:180px;
+    left:180px;
+    top:65px;
+    transform:rotate(7deg);
+}
+
+.photo.three{
+    width:150px;
+    height:150px;
+    left:100px;
+    top:180px;
+    transform:rotate(-5deg);
+}
+
+.photo.one img{
+    background:
+    linear-gradient(135deg,#8bc7f5,#f8c8d8);
+}
+
+.photo.two img{
+    background:
+    linear-gradient(135deg,#f8d7aa,#a8d6f3);
+}
+
+.photo.three img{
+    background:
+    linear-gradient(135deg,#d7c6f4,#9dd7cf);
+}
+
+.small-note{
+    position:absolute;
+    z-index:4;
+
+    background:#fffdf5;
+    padding:13px;
+
+    width:105px;
+
+    font-family:'Caveat',cursive;
+    font-size:20px;
+    line-height:1.1;
+
+    box-shadow:0 5px 15px rgba(30,50,80,.12);
+
+    transform:rotate(-4deg);
+
+    left:5px;
+    bottom:15px;
+}
+
+.hero-right{
+    position:relative;
+    z-index:2;
+    padding-left:30px;
+}
+
+.hello{
+    font-family:'Caveat',cursive;
+    font-size:27px;
+}
+
+.hero h1{
+    font-family:'Caveat',cursive;
+    font-size:53px;
+    line-height:1.0;
+    color:var(--navy);
+    margin:5px 0 14px;
+}
+
+.hero-sub{
+    font-size:16px;
+    line-height:1.7;
+    margin-bottom:15px;
+}
+
+.country{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    font-weight:600;
+    margin:14px 0;
+}
+
+.arrow{
+    font-size:27px;
+}
+
+.hero-btn{
+    display:inline-block;
+    background:#526ed5;
+    color:white;
+    text-decoration:none;
+
+    padding:12px 24px;
+    border-radius:30px;
+
+    font-size:14px;
+    font-weight:600;
+
+    box-shadow:0 6px 14px rgba(76,110,219,.25);
+}
+
+.hero-btn:hover{
+    transform:translateY(-2px);
+}
+
+/* ================= GENERAL ================= */
+
+.container{
+    width:92%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.section{
+    padding:25px 0;
+}
+
+.section-title{
+    font-family:'Caveat',cursive;
+    font-size:34px;
+    color:var(--navy);
+    margin-bottom:15px;
+}
+
+.section-title::after{
+    content:"";
+    display:block;
+    width:75px;
+    height:4px;
+    background:#e7c968;
+    border-radius:10px;
+    margin-top:2px;
+}
+
+/* ================= ABOUT ================= */
+
+.about{
+    background:#fffaf8;
+}
+
+.about-box{
+    background:white;
+    border-radius:18px;
+
+    display:grid;
+    grid-template-columns:32% 43% 25%;
+
+    overflow:hidden;
+
+    box-shadow:0 5px 20px rgba(30,50,80,.07);
+}
+
+.about-image{
+    min-height:220px;
+
+    background:
+    linear-gradient(135deg,#d8edff,#ffe4d8);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:85px;
+}
+
+.about-text{
+    padding:28px;
+}
+
+.about-text p{
+    font-size:13px;
+    line-height:1.8;
+}
+
+.about-info{
+    background:#fbfbff;
+    padding:25px;
+}
+
+.info-item{
+    margin-bottom:17px;
+}
+
+.info-item strong{
+    display:block;
+    font-size:12px;
+}
+
+.info-item span{
+    font-size:11px;
+    color:#586784;
+}
+
+/* ================= EDUCATION ================= */
+
+.education{
+    background:#f2f8ff;
+    border-radius:20px;
+    padding:18px;
+}
+
+.edu-row{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:12px;
+}
+
+.edu-card{
+    background:white;
+    border-radius:13px;
+    min-height:155px;
+    padding:15px 10px;
+
+    text-align:center;
+
+    box-shadow:0 3px 12px rgba(50,80,130,.08);
+
+    position:relative;
+}
+
+.edu-card:not(:last-child)::after{
+    content:"›";
+
+    position:absolute;
+    right:-12px;
+    top:65px;
+
+    font-size:28px;
+    color:#4564bd;
+    font-weight:700;
+}
+
+.edu-icon{
+    font-size:27px;
+    margin-bottom:7px;
+}
+
+.edu-card h3{
+    font-size:11px;
+    color:#294a78;
+}
+
+.edu-card p{
+    font-size:9px;
+    margin-top:7px;
+    color:#53647e;
+}
+
+/* ================= THREE COLUMNS ================= */
+
+.three-columns{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:15px;
+}
+
+.panel{
+    border-radius:18px;
+    padding:20px;
+    min-height:300px;
+}
+
+.panel h2{
+    font-family:'Caveat',cursive;
+    font-size:29px;
+    margin-bottom:5px;
+    color:var(--navy);
+}
+
+.panel-sub{
+    font-size:10px;
+    color:#63718a;
+    margin-bottom:15px;
+}
+
+/* Skills */
+
+.skills-panel{
+    background:var(--purple);
+}
+
+.skills{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.skill{
+    background:rgba(255,255,255,.8);
+    padding:9px 5px;
+    border-radius:10px;
+    text-align:center;
+    font-size:9px;
+    font-weight:600;
+}
+
+/* Korea */
+
+.korea-panel{
+    background:#dff3f9;
+}
+
+.korea-image{
+    height:105px;
+    border-radius:12px;
+    background:
+    linear-gradient(
+        rgba(255,255,255,.05),
+        rgba(255,255,255,.05)
+    ),
+    linear-gradient(135deg,#7dc5ef,#b9e5d2,#ffd7c6);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:48px;
+
+    margin-bottom:12px;
+}
+
+.korea-list{
+    list-style:none;
+    font-size:10px;
+}
+
+.korea-list li{
+    margin:7px 0;
+}
+
+/* Global */
+
+.global-panel{
+    background:#f9e8f2;
+}
+
+.global-item{
+    display:flex;
+    gap:12px;
+    margin:15px 0;
+}
+
+.global-icon{
+    font-size:25px;
+}
+
+.global-item strong{
+    font-size:11px;
+}
+
+.global-item p{
+    font-size:9px;
+}
+
+/* ================= GOALS ================= */
+
+.goals-section{
+    background:#e4f6e9;
+    border-radius:20px;
+    padding:20px;
+}
+
+.goals-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:13px;
+}
+
+.goal{
+    background:rgba(255,255,255,.75);
+    padding:20px;
+    border-radius:14px;
+}
+
+.goal-icon{
+    font-size:26px;
+}
+
+.goal h3{
+    font-size:12px;
+    color:#34766a;
+    margin:7px 0;
+}
+
+.goal ul{
+    padding-left:16px;
+}
+
+.goal li{
+    font-size:9px;
+    margin:5px 0;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+    margin-top:20px;
+    background:var(--navy);
+    color:white;
+
+    padding:25px 5%;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.footer-name{
+    font-size:10px;
+}
+
+.footer-quote{
+    font-family:'Caveat',cursive;
+    font-size:25px;
+}
+
+.social{
+    font-size:18px;
+    letter-spacing:8px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:900px){
+
+    .nav-links{
+        gap:10px;
+    }
+
+    .hero{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .hero-left{
+        display:none;
+    }
+
+    .hero-right{
+        padding:20px;
+    }
+
+    .country{
+        justify-content:center;
+    }
+
+    .about-box{
+        grid-template-columns:1fr;
+    }
+
+    .edu-row{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .edu-card:not(:last-child)::after{
+        display:none;
+    }
+
+    .three-columns{
+        grid-template-columns:1fr;
+    }
+
+    .goals-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    footer{
+        flex-direction:column;
+        gap:10px;
+        text-align:center;
+    }
+}
+
+@media(max-width:600px){
+
+    .navbar{
+        height:auto;
+        padding:12px;
+        flex-direction:column;
+        gap:8px;
+    }
+
+    .nav-links{
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .hero h1{
+        font-size:43px;
+    }
+
+    .edu-row{
+        grid-template-columns:1fr;
+    }
+
+    .skills{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .goals-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+<div class="logo">
+    ✈️ Udari's Portfolio ♡
+</div>
+
+<ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#korea">Korea Journey</a></li>
+    <li><a href="#global">Global & Culture</a></li>
+    <li><a href="#goals">Goals</a></li>
+</ul>
+
+<div class="nav-icons">
+    ☀️ 🌙
+</div>
+
+</nav>
+<!-- ================= HERO ================= -->
+
+<section class="hero" id="home">
+
+<div class="hero-left">
+
+<div class="photo-stack">
+
+<div class="photo one">
+    <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:55px;">
+        🌊🏙️
+    </div>
+</div>
+
+<div class="photo two">
+    <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;">
+        🌸🏛️
+    </div>
+</div>
+
+<div class="photo three">
+    <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:45px;">
+        🎓📚
+    </div>
+</div>
+
+<div class="small-note">
+    Small<br>
+    Steps<br>
+    Big<br>
+    Dreams ♡
+</div>
+
+</div>
+
+</div>
+
+
+<div class="hero-right">
+
+<div class="hello">
+    Hello, I'm ♡
+</div>
+
+<h1>
+    Hathamuni Gamage<br>
+    Udari Upadya Lakmali
+</h1>
+
+<p class="hero-sub">
+    Integrated Business Management Student<br>
+    Dong-A University
+</p>
+
+<div class="country">
+    🇱🇰 Sri Lanka
+    <span class="arrow">→</span>
+    🇰🇷 South Korea
+</div>
+
+<a href="#about" class="hero-btn">
+    Explore My Journey&nbsp; →
+</a>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= ABOUT ================= -->
+
+<section class="section" id="about">
+
+<div class="container">
+
+<div class="about-box">
+
+<div class="about-image">
+    📚☕💻
+</div>
+
+<div class="about-text">
+
+<h2 class="section-title">
+    About Me
+</h2>
+
+<p>
+I am Hathamuni Gamage Udari Upadya Lakmali,
+a dedicated and enthusiastic student from Sri Lanka,
+currently studying Integrated Business Management
+at Dong-A University, Busan.
+</p>
+
+<br>
+
+<p>
+I am passionate about business, communication,
+personal development and creating a meaningful future
+through education.
+</p>
+
+<br>
+
+<p>
+I enjoy learning new things, exploring different cultures
+and challenging myself to become a better version of me.
+</p>
+
+</div>
+
+
+<div class="about-info">
+
+<div class="info-item">
+<strong>🎓 University</strong>
+<span>Dong-A University</span>
+</div>
+
+<div class="info-item">
+<strong>🏛️ Department</strong>
+<span>Integrated Business Management</span>
+</div>
+
+<div class="info-item">
+<strong>📍 Location</strong>
+<span>Busan, South Korea</span>
+</div>
+
+<div class="info-item">
+<strong>♡ Nationality</strong>
+<span>Sri Lankan</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= EDUCATION ================= -->
+
+<section class="section" id="education">
+
+<div class="container">
+
+<div class="education">
+
+<h2 class="section-title">
+    🎓 Education
+</h2>
+
+<p style="font-size:11px;margin-bottom:18px;">
+    My learning journey so far...
+</p>
+
+
+<div class="edu-row">
+
+<div class="edu-card">
+<div class="edu-icon">🏫</div>
+<h3>School</h3>
+<p>Kegalle St. Joseph's College</p>
+<p><b>Completed 2024</b></p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">📖</div>
+<h3>A/L (Arts Stream)</h3>
+<p>
+Geography - A<br>
+ICT - C<br>
+Economics - C
+</p>
+<p>Z Score - 1.1070</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">💻</div>
+<h3>IT Course</h3>
+<p>University of Colombo</p>
+<p>Completed</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">🧮</div>
+<h3>AAT Level 1</h3>
+<p>JMC</p>
+<p>2021</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">👥</div>
+<h3>HRM Certificate</h3>
+<p>CIPM</p>
+<p>2024</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">📄</div>
+<h3>Professional English</h3>
+<p>University of Peradeniya</p>
+<p>Before Korea</p>
+</div>
+
+
+<div class="edu-card">
+<div class="edu-icon">🎓</div>
+<h3>Dong-A University</h3>
+<p>Integrated Business Management</p>
+<p>2026 → ...</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= SKILLS / KOREA / GLOBAL ================= -->
+
+<section class="section">
+
+<div class="container">
+
+<div class="three-columns">
+
+
+<!-- SKILLS -->
+
+<div class="panel skills-panel" id="skills">
+
+<h2>💡 Skills & Interests</h2>
+
+<p class="panel-sub">
+Skills I've developed and things I love...
+</p>
+
+<div class="skills">
+
+<div class="skill">💼 Business</div>
+<div class="skill">💬 Communication</div>
+<div class="skill">🌐 English</div>
+
+<div class="skill">💻 IT & Technology</div>
+<div class="skill">👥 HRM</div>
+<div class="skill">🤝 Teamwork</div>
+
+<div class="skill">💡 Problem Solving</div>
+<div class="skill">🎨 Creativity</div>
+<div class="skill">🌱 Leadership</div>
+
+<div class="skill">📖 Reading</div>
+<div class="skill">✈️ Travel</div>
+<div class="skill">🎵 Music</div>
+
+</div>
+
+</div>
+
+
+<!-- KOREA -->
+
+<div class="panel korea-panel" id="korea">
+
+<h2>✈️ My Korea Journey</h2>
+
+<p class="panel-sub">
+A new chapter, new experiences...
+</p>
+
+<div class="korea-image">
+    🌊🏙️🌉
+</div>
+
+<ul class="korea-list">
+
+<li>🎓 Studying at Dong-A University</li>
+
+<li>🌏 International student experience</li>
+
+<li>🌸 Cross-cultural experience</li>
+
+<li>🗣️ Learning Korean language</li>
+
+</ul>
+
+<p style="font-family:'Caveat';font-size:18px;text-align:right;margin-top:8px;">
+조금씩, 더 나은 나로 ♡
+</p>
+
+</div>
+
+
+<!-- GLOBAL -->
+
+<div class="panel global-panel" id="global">
+
+<h2>🌎 Global & Culture</h2>
+
+<p class="panel-sub">
+Connecting people, cultures and ideas.
+</p>
+
+
+<div class="global-item">
+
+<div class="global-icon">💬</div>
+
+<div>
+<strong>Languages</strong>
+<p>
+Sinhala (Native) |
+English (Professional) |
+Korean (Beginner)
+</p>
+</div>
+
+</div>
+
+
+<div class="global-item">
+
+<div class="global-icon">👥</div>
+
+<div>
+<strong>Cross-cultural Experience</strong>
+<p>
+Adapting to a new country,
+learning from different cultures
+</p>
+</div>
+
+</div>
+
+
+<div class="global-item">
+
+<div class="global-icon">🌎</div>
+
+<div>
+<strong>Using My International Background</strong>
+<p>
+Bringing global perspectives,
+communication skills and cultural
+understanding to the business world.
+</p>
+</div>
+
+</div>
+
+<div style="font-size:45px;text-align:right;">
+    🌍✈️
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= GOALS ================= -->
+
+<section class="section">
+
+<div class="container">
+
+<div class="goals-section" id="goals">
+
+<h2 class="section-title">
+    🎯 My Goals
+</h2>
+
+<p style="font-size:11px;margin-bottom:15px;">
+    What I want to achieve...
+</p>
+
+
+<div class="goals-grid">
+
+
+<div class="goal">
+
+<div class="goal-icon">📖</div>
+
+<h3>
+Academic Goals
+</h3>
+
+<ul>
+<li>Maintain a high GPA</li>
+<li>Learn modern business strategies and skills</li>
+</ul>
+
+</div>
+
+
+<div class="goal">
+
+<div class="goal-icon">💼</div>
+
+<h3>
+Career Goals
+</h3>
+
+<ul>
+<li>Gain practical management experience</li>
+<li>Work in a company after graduation</li>
+<li>Pursue a Master's at Dong-A</li>
+</ul>
+
+</div>
+
+
+<div class="goal">
+
+<div class="goal-icon">🗓️</div>
+
+<h3>
+Short-Term Goals
+</h3>
+
+<ul>
+<li>Improve Korean language skills</li>
+<li>Get the best scholarship</li>
+<li>Build strong professional skills</li>
+</ul>
+
+</div>
+
+
+<div class="goal">
+
+<div class="goal-icon">📈</div>
+
+<h3>
+Long-Term Goals
+</h3>
+
+<ul>
+<li>Return to Sri Lanka</li>
+<li>Start a business consultancy</li>
+<li>Support small businesses</li>
+<li>Create opportunities for young entrepreneurs</li>
+</ul>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= DATA ANALYSIS ================= -->
+
+<section class="section" id="data-analysis">
+
+<div class="container">
+
+<h2 class="section-title">📊 Data Analysis</h2>
+
+<!-- ========== GAME PROJECTS (separate) ========== -->
+<p style="font-size:13px; margin-bottom:12px; line-height:1.8;">
+Game development project
+</p>
+
+<div class="three-columns" style="margin-bottom:28px;">
+
+<div class="panel" style="background:#fff4c9; min-height:220px;">
+<div style="font-size:40px;">📄</div>
+<h2>Game Documentation</h2>
+<p style="font-size:12px; line-height:1.8; margin:12px 0 20px;">
+Read the document describing my game concept, story, rules, controls, scoring, and technical requirements.
+</p>
+<a href="https://docs.google.com/document/d/1Lx2V13PlBW_JwH-IVOJBlcCMwJwS6ssunqvT5hg6GCM/edit?usp=drivesdk"
+target="_blank" rel="noopener noreferrer"
+style="display:inline-block; background:#526ed5; color:white; padding:10px 18px; border-radius:25px; text-decoration:none; font-size:12px; font-weight:600;">
+View Game Document →
+</a>
+</div>
+
+<div class="panel" style="background:#eaf4ff; min-height:220px;">
+<div style="font-size:40px;">🎮</div>
+<h2>The Town That Forgot the Time</h2>
+<p style="font-size:12px; line-height:1.8; margin:12px 0 20px;">
+Play my mystery adventure game. Explore a mysterious town, solve riddles, collect clues, and discover the correct bus departure time.
+</p>
+<a href="https://udari428.github.io/da/the-town-that-forgot-the-time.html"
+target="_blank" rel="noopener noreferrer"
+style="display:inline-block; background:#526ed5; color:white; padding:10px 18px; border-radius:25px; text-decoration:none; font-size:12px; font-weight:600;">
+Play the Game →
+</a>
+</div>
+
+</div>
+
+<!-- ========== DATA DETECTIVES A1 (separate block) ========== -->
+<h2 class="section-title" style="margin-top:10px;">📌 Data Detectives Assignment </h2>
+
+<p style="font-size:13px; margin-bottom:16px; line-height:1.8;">
+Assignment 1 — Allocation Report tools and documentation
+</p>
+
+<div class="three-columns">
+
+<!-- 1) Documentation only -->
+<div class="panel" style="background:#fff3e0; min-height:220px;">
+<div style="font-size:40px;">📁</div>
+<h2>Documentation</h2>
+<p style="font-size:12px; line-height:1.8; margin:12px 0 20px;">
+Allocation Report, original CSV, cleaned CSV, change log, and supporting files (Google Drive).
+</p>
+<a href=https://drive.google.com/drive/folders/1Q4S7MQbWmyN_4dYm_LY43njGdfIuk6u_"
+target="_blank" rel="noopener noreferrer"
+style="display:inline-block; background:#ff9800; color:white; padding:10px 18px; border-radius:25px; text-decoration:none; font-size:12px; font-weight:600;">
+View Documentation →
+</a>
+</div>
+
+<!-- 2) HTML Tool only -->
+<div class="panel" style="background:#e3f2fd; min-height:220px;">
+<div style="font-size:40px;">🔍</div>
+<h2>Analysis Tool</h2>
+<p style="font-size:12px; line-height:1.8; margin:12px 0 20px;">
+Interactive HTML tool (T1–T6) for data quality checks, statistics, IQR outliers, charts, and cleaned CSV export.
+</p>
+<a href="https://udari428.github.io/da/Data_Detectives_Analysis_Tool.html"
+target="_blank" rel="noopener noreferrer"
+style="display:inline-block; background:#2196f3; color:white; padding:10px 18px; border-radius:25px; text-decoration:none; font-size:12px; font-weight:600;">
+Open Analysis Tool →
+</a>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+    
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<div class="footer-name">
+    Udari Upadya Lakmali &nbsp; | &nbsp; Student Portfolio
+</div>
+
+<div class="footer-quote">
+    Dream · Learn · Grow · Make a Difference ♡
+</div>
+
+<div class="social">
+    in &nbsp; ◎ &nbsp; ✉
+</div>
+
+</footer>
+
+
+</body>
+</html>
