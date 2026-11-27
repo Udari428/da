@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Detectives — Cipher Analysis Tool</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #172033;
+    --muted: #596579;
+    --line: #d7deea;
+    --blue: #2457a7;
+    --pale: #f4f7fb;
+    --red: #9d2020;
+    --green: #146c43;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--pale);
+    color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+  }
+  header {
+    background: #172b4d;
+    color: white;
+    padding: 1.4rem max(1rem, calc((100% - 1100px) / 2));
+  }
+  header h1 { margin: 0 0 .3rem; font-size: 1.6rem; }
+  header p { margin: 0; color: #e0e8f6; }
+  main { max-width: 1100px; margin: 1rem auto; padding: 0 1rem 2rem; }
+  .card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px #10264a0b;
+  }
+  h2 { margin: 0 0 .8rem; font-size: 1.2rem; }
+  h3 { margin: .5rem 0; font-size: 1rem; }
+  p { margin: .45rem 0; }
+  .muted, .help { color: var(--muted); font-size: .92rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: .8rem;
+    align-items: end;
+  }
+  label { display: block; font-weight: 600; }
+  input, select, textarea, button {
+    font: inherit;
+  }
+  input[type="file"], input[type="text"], input[type="password"], select, textarea {
+    display: block;
+    width: 100%;
+    margin-top: .3rem;
+    padding: .55rem .65rem;
+    border: 1px solid #aeb9ca;
+    border-radius: 6px;
+    background: white;
+    color: var(--ink);
+  }
+  textarea { min-height: 180px; resize: vertical; }
+  textarea[readonly] { background: #f8fafc; }
+  button {
+    border: 0;
+    border-radius: 6px;
+    padding: .6rem .85rem;
+    color: white;
+    background: var(--blue);
+    cursor: pointer;
+    font-weight: 650;
+  }
+  button.secondary { background: #475569; }
+  button.light {
+    color: var(--ink);
+    background: #e8edf5;
+  }
+  button:hover { filter: brightness(.94); }
+  .buttons { display: flex; flex-wrap: wrap; gap: .55rem; margin: .8rem 0; }
+  .scroll {
+    max-height: 330px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-top: .65rem;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    border-bottom: 1px solid #e2e7ef;
+    padding: .45rem .55rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { position: sticky; top: 0; background: #edf2f8; z-index: 1; }
+  td { font-size: .91rem; }
+  .cellText {
+    max-height: 115px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .notice {
+    padding: .65rem .8rem;
+    background: #edf4ff;
+    border-left: 4px solid var(--blue);
+    border-radius: 4px;
+  }
+  .error {
+    padding: .7rem .8rem;
+    background: #fff0f0;
+    color: var(--red);
+    border-left: 4px solid var(--red);
+    border-radius: 4px;
+    margin-top: .75rem;
+  }
+  .summary { color: var(--green); font-weight: 650; margin: .6rem 0; }
+  .comparison {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: .8rem;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 330px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: white;
+  }
+  code { background: #eef1f6; padding: .1rem .25rem; border-radius: 3px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.3rem; }
+    .card { padding: .8rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Data Detectives — Cipher Analysis Tool</h1>
+  <p>Vigenère / DD1 · AES-256-GCM / DD2 · ROT13</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1. Input</h2>
+    <div class="grid">
+      <label>
+        Upload CSV, TSV, or TXT
+        <input id="fileInput" type="file" accept=".csv,.tsv,.txt,text/csv,text/plain">
+      </label>
+      <label>
+        Input mode
+        <select id="inputMode">
+          <option value="text">Typed or pasted text / TXT</option>
+          <option value="csv">CSV rows</option>
+        </select>
+      </label>
+    </div>
+    <p id="fileInfo" class="muted">No file loaded. You can type or paste text below.</p>
+
+    <div id="textPanel">
+      <div class="grid">
+        <label>
+          MessageID for new DD2 encryption
+          <input id="manualMessageId" type="text" placeholder="For example: PRACTICE-001">
+        </label>
+        <p class="help">A MessageID is required only when encrypting typed text as DD2.</p>
+      </div>
+      <label for="textInput">Original text</label>
+      <textarea id="textInput" placeholder="Type or paste text here. A TXT upload will appear here."></textarea>
+    </div>
+
+    <div id="csvPanel" hidden>
+      <div class="grid">
+        <label>
+          Message column
+          <select id="messageColumn"></select>
+        </label>
+        <label>
+          MessageID column
+          <select id="idColumn"></select>
+        </label>
+      </div>
+      <div class="buttons">
+        <button id="selectAll" class="light" type="button">Select all rows</button>
+        <button id="selectNone" class="light" type="button">Select no rows</button>
+        <span id="selectionCount" class="muted"></span>
+      </div>
+      <p class="help">Select the rows to process. The original CSV records are not overwritten.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>Use</th><th>Row</th><th>MessageID</th><th>Original message preview</th></tr>
+          </thead>
+          <tbody id="rowPickerBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. Choose operation</h2>
+    <div class="grid">
+      <label>
+        Action
+        <select id="action">
+          <option value="decrypt">Decrypt</option>
+          <option value="encrypt">Encrypt</option>
+        </select>
+      </label>
+      <label>
+        Cipher / format
+        <select id="cipher">
+          <option value="auto">Auto-detect DD1 / DD2 (decrypt only)</option>
+          <option value="vigenere">Vigenère — DD1</option>
+          <option value="aes">AES-256-GCM — DD2</option>
+          <option value="rot13">ROT13</option>
+        </select>
+      </label>
+      <label id="vigKeyWrap">
+        Vigenère key
+        <input id="vigKey" type="password" autocomplete="off" placeholder="Enter key">
+      </label>
+      <label id="aesKeyWrap">
+        AES-256 key (64 hexadecimal characters)
+        <input id="aesKey" type="password" autocomplete="off" placeholder="Enter 32-byte key as 64 hex characters">
+      </label>
+      <label id="aadWrap">
+        AES-GCM additional authenticated data (AAD)
+        <select id="aadMode">
+          <option value="none">None (default)</option>
+          <option value="messageId">MessageID (only if required by your reference)</option>
+        </select>
+      </label>
+    </div>
+    <p id="autoHelp" class="notice">
+      Auto-detect decrypts rows beginning with <code>DD1:</code> or <code>DD2.</code>.
+      Other rows are marked as skipped.
+    </p>
+    <p class="help">
+      The tool does not save or send your keys. DD2 encryption generates a fresh random nonce
+      for every message.
+    </p>
+    <div class="buttons">
+      <button id="runButton" type="button">Process selected input</button>
+      <button id="clearButton" class="secondary" type="button">Clear all</button>
+    </div>
+    <div id="errorBox" class="error" role="alert" hidden></div>
+  </section>
+
+  <section id="outputPanel" class="card" hidden>
+    <h2>3. Results</h2>
+    <div id="summary" class="summary"></div>
+    <div class="buttons">
+      <button id="copyButton" class="light" type="button">Copy results</button>
+      <button id="downloadCsvButton" class="light" type="button">Download CSV</button>
+      <button id="downloadTxtButton" class="light" type="button">Download TXT</button>
+    </div>
+
+    <div id="textOutput" hidden>
+      <div class="comparison">
+        <div>
+          <h3>Original</h3>
+          <textarea id="shownOriginal" readonly></textarea>
+        </div>
+        <div>
+          <h3>Result</h3>
+          <textarea id="shownResult" readonly></textarea>
+          <p id="textStatus" class="muted"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="csvOutput" hidden>
+      <p class="help">Original and processed values are shown together below.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>MessageID</th><th>Original</th><th>Result</th><th>Status</th></tr>
+          </thead>
+          <tbody id="resultBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Vigenère letter-frequency chart</h2>
+    <p class="help">The chart appears after Vigenère encryption. Percentages count A–Z letters only.</p>
+    <canvas id="frequencyChart" aria-label="Before and after Vigenère A to Z letter percentages"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>R1 — Cipher descriptions</h2>
+    <ul>
+      <li><strong>Vigenère:</strong> A repeating keyword shifts letters by changing amounts. This tool preserves case and punctuation and advances the key on letters only.</li>
+      <li><strong>AES-256-GCM:</strong> Symmetric encryption with a 256-bit key. It authenticates the message, so a wrong key or modified ciphertext causes decryption to fail.</li>
+      <li><strong>ROT13:</strong> A Caesar cipher that rotates letters by 13 places. It is reversible but is not secure encryption.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const encoder = new TextEncoder();
+const decoder = new TextDecoder("utf-8", { fatal: true });
+
+let csvData = null;
+let selectedRows = new Set();
+let rowResults = new Map();
+let lastTextResult = "";
+let lastTextStatus = "";
+let chartData = null;
+
+function setError(message = "") {
+  $("errorBox").textContent = message;
+  $("errorBox").hidden = !message;
+}
+
+function invalidateOutput() {
+  rowResults.clear();
+  $("outputPanel").hidden = true;
+  chartData = null;
+  drawChart();
+}
+
+function updateMode() {
+  const isCsv = $("inputMode").value === "csv";
+  $("textPanel").hidden = isCsv;
+  $("csvPanel").hidden = !isCsv;
+}
+
+function updateCipherControls() {
+  const c = $("cipher").value;
+  const showVig = c === "vigenere" || c === "auto";
+  const showAes = c === "aes" || c === "auto";
+  $("vigKeyWrap").hidden = !showVig;
+  $("aesKeyWrap").hidden = !showAes;
+  $("aadWrap").hidden = !showAes;
+  $("autoHelp").hidden = c !== "auto";
+}
+
+function detectDelimiter(text) {
+  const line = String(text).replace(/^\uFEFF/, "").split(/\r\n|\n|\r/, 1)[0] || "";
+  const candidates = [",", "\t", ";"];
+  const counts = { ",": 0, "\t": 0, ";": 0 };
+  let quoted = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (quoted && line[i + 1] === '"') i++;
+      else quoted = !quoted;
+    } else if (!quoted && candidates.includes(ch)) {
+      counts[ch]++;
+    }
+  }
+  return candidates.sort((a, b) => counts[b] - counts[a])[0] || ",";
+}
+
+function parseDelimited(text) {
+  const delimiter = detectDelimiter(text);
+  const rows = [];
+  let row = [];
+  let field = "";
+  let quoted = false;
+  const source = String(text).replace(/^\uFEFF/, "");
+
+  for (let i = 0; i < source.length; i++) {
+    const ch = source[i];
+
+    if (quoted) {
+      if (ch === '"' && source[i + 1] === '"') {
+        field += '"';
+        i++;
+      } else if (ch === '"') {
+        quoted = false;
+      } else {
+        field += ch;
+      }
+    } else if (ch === '"' && field === "") {
+      quoted = true;
+    } else if (ch === delimiter) {
+      row.push(field);
+      field = "";
+    } else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && source[i + 1] === "\n") i++;
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    } else {
+      field += ch;
+    }
+  }
+
+  if (field !== "" || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+  return rows;
+}
+
+function clearChildren(node) {
+  while (node.firstChild) node.removeChild(node.firstChild);
+}
+
+function configureColumns() {
+  if (!csvData) return;
+
+  const messageSelect = $("messageColumn");
+  const idSelect = $("idColumn");
+  clearChildren(messageSelect);
+  clearChildren(idSelect);
+
+  csvData.headers.forEach((name, index) => {
+    const label = `${name || "Unnamed column"} (column ${index + 1})`;
+    messageSelect.add(new Option(label, String(index)));
+    idSelect.add(new Option(label, String(index)));
+  });
+  idSelect.add(new Option("(no MessageID column)", "none"), 0);
+
+  const contentIndex = csvData.headers.findIndex(h => h.toLowerCase() === "content");
+  const idIndex = csvData.headers.findIndex(h => h.toLowerCase() === "messageid");
+  messageSelect.value = String(contentIndex >= 0 ? contentIndex : 0);
+  idSelect.value = idIndex >= 0 ? String(idIndex) : "none";
+}
+
+function selectedMessageColumn() {
+  return Number($("messageColumn").value || 0);
+}
+
+function selectedId(index) {
+  if (!csvData || $("idColumn").value === "none") return `Row ${index + 1}`;
+  return String(csvData.rows[index][Number($("idColumn").value)] ?? "");
+}
+
+function updateSelectionCount() {
+  if (!csvData) {
+    $("selectionCount").textContent = "";
+    return;
+  }
+  $("selectionCount").textContent =
+    `${selectedRows.size} of ${csvData.rows.length} rows selected`;
+}
+
+function renderRowPicker() {
+  const body = $("rowPickerBody");
+  clearChildren(body);
+  if (!csvData) return;
+
+  const messageIndex = selectedMessageColumn();
+
+  csvData.rows.forEach((row, index) => {
+    const tr = document.createElement("tr");
+
+    const useCell = document.createElement("td");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = selectedRows.has(index);
+    checkbox.setAttribute("aria-label", `Select row ${index + 1}`);
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) selectedRows.add(index);
+      else selectedRows.delete(index);
+      updateSelectionCount();
+      invalidateOutput();
+    });
+    useCell.appendChild(checkbox);
+    tr.appendChild(useCell);
+
+    const numberCell = document.createElement("td");
+    numberCell.textContent = String(index + 1);
+    tr.appendChild(numberCell);
+
+    const idCell = document.createElement("td");
+    idCell.textContent = selectedId(index);
+    tr.appendChild(idCell);
+
+    const contentCell = document.createElement("td");
+    const fullText = String(row[messageIndex] ?? "");
+    const preview = document.createElement("div");
+    preview.className = "cellText";
+    preview.textContent = fullText.replace(/\s+/g, " ").slice(0, 220);
+    preview.title = fullText;
+    contentCell.appendChild(preview);
+    tr.appendChild(contentCell);
+
+    body.appendChild(tr);
+  });
+
+  updateSelectionCount();
+}
+
+function setInputFromFile(file, content) {
+  invalidateOutput();
+  $("fileInfo").textContent = `${file.name} loaded (${file.size.toLocaleString()} bytes).`;
+
+  if (/\.txt$/i.test(file.name)) {
+    csvData = null;
+    selectedRows = new Set();
+    $("inputMode").value = "text";
+    $("textInput").value = content;
+    updateMode();
+    return;
+  }
+
+  const parsed = parseDelimited(content);
+  if (parsed.length < 2) throw new Error("The uploaded CSV/TSV appears to be empty or has no data rows.");
+
+  const headers = parsed[0].map(h => String(h).trim());
+  const rows = parsed.slice(1).filter(r => r.some(value => value !== ""));
+  if (!headers.length || !rows.length) throw new Error("Could not find a header row and data rows in this file.");
+
+  csvData = { headers, rows };
+  selectedRows = new Set(rows.map((_, index) => index));
+  $("inputMode").value = "csv";
+  configureColumns();
+  updateMode();
+  renderRowPicker();
+}
+
+$("fileInput").addEventListener("change", async event => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  setError("");
+  try {
+    setInputFromFile(file, await file.text());
+  } catch (error) {
+    setError(error.message || "Could not read this file.");
+  }
+});
+
+$("inputMode").addEventListener("change", () => {
+  updateMode();
+  invalidateOutput();
+});
+$("messageColumn").addEventListener("change", () => {
+  renderRowPicker();
+  invalidateOutput();
+});
+$("idColumn").addEventListener("change", () => {
+  renderRowPicker();
+  invalidateOutput();
+});
+$("selectAll").addEventListener("click", () => {
+  if (!csvData) return;
+  selectedRows = new Set(csvData.rows.map((_, index) => index));
+  renderRowPicker();
+  invalidateOutput();
+});
+$("selectNone").addEventListener("click", () => {
+  selectedRows.clear();
+  renderRowPicker();
+  invalidateOutput();
+});
+$("cipher").addEventListener("change", updateCipherControls);
+$("action").addEventListener("change", updateCipherControls);
+$("textInput").addEventListener("input", invalidateOutput);
+
+function normalizeVigenereKey(key) {
+  const letters = String(key).toUpperCase().replace(/[^A-Z]/g, "");
+  if (!letters) throw new Error("Enter a Vigenère key containing at least one A–Z letter.");
+  return letters;
+}
+
+function vigenereTransform(text, key, decrypt) {
+  let keyPosition = 0;
+  return String(text).replace(/[A-Za-z]/g, character => {
+    const code = character.charCodeAt(0);
+    const base = code >= 65 && code <= 90 ? 65 : 97;
+    const shift = key.charCodeAt(keyPosition % key.length) - 65;
+    keyPosition++;
+    const direction = decrypt ? -shift : shift;
+    const value = (code - base + direction + 26) % 26;
+    return String.fromCharCode(base + value);
+  });
+}
+
+function stripDD1(text) {
+  return String(text).replace(/^\s*DD1:/i, "");
+}
+
+function rot13(text) {
+  return String(text).replace(/[A-Za-z]/g, character => {
+    const code = character.charCodeAt(0);
+    const base = code >= 65 && code <= 90 ? 65 : 97;
+    return String.fromCharCode(base + ((code - base + 13) % 26));
+  });
+}
+
+function detectFormat(text) {
+  const value = String(text).trimStart();
+  if (/^DD1:/i.test(value)) return "vigenere";
+  if (/^DD2\./i.test(value)) return "aes";
+  return "unknown";
+}
+
+function hexToBytes(hex) {
+  const value = String(hex);
+  if (!/^(?:[0-9a-fA-F]{2})*$/.test(value)) {
+    throw new Error("Invalid hexadecimal value.");
+  }
+  const bytes = new Uint8Array(value.length / 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(value.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+}
+
+function bytesToHex(bytes) {
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function bytesToBase64Url(bytes) {
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function base64UrlToBytes(value) {
+  const text = String(value);
+  if (!/^[A-Za-z0-9_-]*={0,2}$/.test(text)) {
+    throw new Error("DD2 ciphertext is not valid base64url.");
+  }
+  const clean = text.replace(/=+$/g, "");
+  const standard = clean.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = standard + "=".repeat((4 - standard.length % 4) % 4);
+  try {
+    const binary = atob(padded);
+    return Uint8Array.from(binary, character => character.charCodeAt(0));
+  } catch {
+    throw new Error("DD2 ciphertext is not valid base64url.");
+  }
+}
+
+function joinBytes(first, second) {
+  const result = new Uint8Array(first.length + second.length);
+  result.set(first, 0);
+  result.set(second, first.length);
+  return result;
+}
+
+async function importAesKey(hexKey) {
+  if (!window.crypto || !window.crypto.subtle) {
+    throw new Error("AES requires a modern browser with Web Crypto support.");
+  }
+  const value = String(hexKey).trim();
+  if (!/^[0-9a-fA-F]{64}$/.test(value)) {
+    throw new Error("AES-256 key must be exactly 64 hexadecimal characters (32 bytes).");
+  }
+  return window.crypto.subtle.importKey(
+    "raw",
+    hexToBytes(value),
+    { name: "AES-GCM" },
+    false,
+    ["encrypt", "decrypt"]
+  );
+}
+
+function aesParameters(nonce, messageId, aadMode) {
+  const parameters = { name: "AES-GCM", iv: nonce, tagLength: 128 };
+  if (aadMode === "messageId") {
+    parameters.additionalData = encoder.encode(messageId);
+  }
+  return parameters;
+}
+
+async function encryptDD2(plaintext, messageId, key, aadMode) {
+  const id = String(messageId || "").trim();
+  if (!id || /[.\s]/.test(id)) {
+    throw new Error("DD2 encryption needs a MessageID with no spaces or periods.");
+  }
+
+  const nonce = window.crypto.getRandomValues(new Uint8Array(12));
+  const sealed = new Uint8Array(await window.crypto.subtle.encrypt(
+    aesParameters(nonce, id, aadMode),
+    key,
+    encoder.encode(String(plaintext))
+  ));
+
+  // Web Crypto returns ciphertext followed by the 16-byte GCM tag.
+  const ciphertext = sealed.slice(0, sealed.length - 16);
+  const tag = sealed.slice(sealed.length - 16);
+
+  return `DD2.${id}.${bytesToHex(nonce)}.${bytesToHex(tag)}.${bytesToBase64Url(ciphertext)}`;
+}
+
+function parseDD2(value) {
+  const parts = String(value).trim().split(".");
+  if (parts.length !== 5 || parts[0] !== "DD2") {
+    throw new Error("Invalid DD2 format. Expected DD2.MessageID.nonce.tag.ciphertext.");
+  }
+
+  const id = parts[1];
+  if (!id) throw new Error("DD2 MessageID is missing.");
+
+  const nonce = hexToBytes(parts[2]);
+  const tag = hexToBytes(parts[3]);
+  if (nonce.length !== 12) throw new Error("DD2 nonce must be 12 bytes (24 hex characters).");
+  if (tag.length !== 16) throw new Error("DD2 tag must be 16 bytes (32 hex characters).");
+
+  return {
+    id,
+    nonce,
+    tag,
+    ciphertext: base64UrlToBytes(parts[4])
+  };
+}
+
+async function decryptDD2(value, key, aadMode) {
+  const parsed = parseDD2(value);
+  const sealed = joinBytes(parsed.ciphertext, parsed.tag);
+  let plaintextBytes;
+
+  try {
+    plaintextBytes = await window.crypto.subtle.decrypt(
+      aesParameters(parsed.nonce, parsed.id, aadMode),
+      key,
+      sealed
+    );
+  } catch {
+    throw new Error("AES-GCM authentication failed. Check the key, data, and AAD setting.");
+  }
+
+  try {
+    return decoder.decode(plaintextBytes);
+  } catch {
+    throw new Error("AES decrypted, but the plaintext is not valid UTF-8 text.");
+  }
+}
+
+async function processOne(original, messageId, action, cipher, vigKey, aesKey, aadMode) {
+  let actualCipher = cipher;
+
+  if (cipher === "auto") {
+    actualCipher = detectFormat(original);
+    if (actualCipher === "unknown") {
+      return { result: "", status: "Skipped — not a DD1/DD2 message." };
+    }
+  }
+
+  if (actualCipher === "vigenere") {
+    if (action === "encrypt") {
+      return {
+        result: "DD1:" + vigenereTransform(stripDD1(original), vigKey, false),
+        status: "OK"
+      };
+    }
+    return {
+      result: vigenereTransform(stripDD1(original), vigKey, true),
+      status: "OK"
+    };
+  }
+
+  if (actualCipher === "aes") {
+    if (action === "encrypt") {
+      return {
+        result: await encryptDD2(original, messageId, aesKey, aadMode),
+        status: "OK"
+      };
+    }
+    return {
+      result: await decryptDD2(original, aesKey, aadMode),
+      status: "OK"
+    };
+  }
+
+  if (actualCipher === "rot13") {
+    return { result: rot13(original), status: "OK" };
+  }
+
+  throw new Error("Choose a supported cipher.");
+}
+
+function addCell(row, value) {
+  const cell = document.createElement("td");
+  const box = document.createElement("div");
+  box.className = "cellText";
+  box.textContent = String(value ?? "");
+  cell.appendChild(box);
+  row.appendChild(cell);
+}
+
+function summarize(results) {
+  const ok = results.filter(r => r.status === "OK").length;
+  const skipped = results.filter(r => r.status.startsWith("Skipped")).length;
+  const errors = results.length - ok - skipped;
+  return `${ok} OK · ${errors} error(s) · ${skipped} skipped`;
+}
+
+function renderCsvResults(results) {
+  clearChildren($("resultBody"));
+  results.forEach(record => {
+    const tr = document.createElement("tr");
+    addCell(tr, record.id);
+    addCell(tr, record.original);
+    addCell(tr, record.result);
+    addCell(tr, record.status);
+    $("resultBody").appendChild(tr);
+  });
+  $("csvOutput").hidden = false;
+  $("textOutput").hidden = true;
+}
+
+function renderTextResult(record) {
+  $("shownOriginal").value = record.original;
+  $("shownResult").value = record.result;
+  $("textStatus").textContent = record.status;
+  lastTextResult = record.result;
+  lastTextStatus = record.status;
+  $("textOutput").hidden = false;
+  $("csvOutput").hidden = true;
+}
+
+async function runOperation() {
+  setError("");
+  invalidateOutput();
+
+  const mode = $("inputMode").value;
+  const action = $("action").value;
+  const cipher = $("cipher").value;
+  const aadMode = $("aadMode").value;
+  let items = [];
+
+  if (mode === "text") {
+    items = [{
+      index: null,
+      id: $("manualMessageId").value,
+      original: $("textInput").value
+    }];
+  } else {
+    if (!csvData) {
+      setError("Upload a CSV/TSV file first.");
+      return;
+    }
+    if (selectedRows.size === 0) {
+      setError("Select at least one CSV row to process.");
+      return;
+    }
+
+    const messageIndex = selectedMessageColumn();
+    const indices = Array.from(selectedRows).sort((a, b) => a - b);
+    items = indices.map(index => ({
+      index,
+      id: $("idColumn").value === "none" ? "" : String(csvData.rows[index][Number($("idColumn").value)] ?? ""),
+      original: String(csvData.rows[index][messageIndex] ?? "")
+    }));
+  }
+
+  if (cipher === "auto" && action !== "decrypt") {
+    setError("Auto-detect is for decryption. Choose a specific cipher to encrypt.");
+    return;
+  }
+
+  const detected = items.map(item => detectFormat(item.original));
+  const needsVigenere = cipher === "vigenere" || (cipher === "auto" && detected.includes("vigenere"));
+  const needsAES = cipher === "aes" || (cipher === "auto" && detected.includes("aes"));
+
+  let vigKey = "";
+  let aesKey = null;
+  try {
+    if (needsVigenere) vigKey = normalizeVigenereKey($("vigKey").value);
+    if (needsAES) aesKey = await importAesKey($("aesKey").value);
+  } catch (error) {
+    setError(error.message || "Could not prepare the cipher key.");
+    return;
+  }
+
+  const results = [];
+  for (const item of items) {
+    try {
+      const processed = await processOne(
+        item.original, item.id, action, cipher, vigKey, aesKey, aadMode
+      );
+      results.push({
+        ...item,
+        result: processed.result,
+        status: processed.status
+      });
+    } catch (error) {
+      results.push({
+        ...item,
+        result: "",
+        status: `Error: ${error.message || "Could not process this message."}`
+      });
+    }
+  }
+
+  $("outputPanel").hidden = false;
+  $("summary").textContent = summarize(results);
+
+  if (mode === "csv") {
+    rowResults = new Map(results.map(record => [record.index, record]));
+    renderCsvResults(results);
+  } else {
+    renderTextResult(results[0]);
+  }
+
+  if (cipher === "vigenere" && action === "encrypt") {
+    const before = items.map(item => stripDD1(item.original)).join("\n");
+    const after = results
+      .filter(record => record.status === "OK")
+      .map(record => stripDD1(record.result))
+      .join("\n");
+    chartData = { before, after };
+    drawChart();
+  } else {
+    chartData = null;
+    drawChart();
+  }
+}
+
+function csvEscape(value) {
+  const text = String(value ?? "");
+  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function makeCsv(rows) {
+  return "\uFEFF" + rows.map(row => row.map(csvEscape).join(",")).join("\r\n");
+}
+
+function uniqueHeader(base, existing) {
+  let name = base;
+  let number = 2;
+  while (existing.includes(name)) name = `${base}_${number++}`;
+  existing.push(name);
+  return name;
+}
+
+function buildCsvDownload() {
+  if ($("inputMode").value !== "csv" || !csvData) {
+    return makeCsv([
+      ["Original", "Result", "Status"],
+      [$("textInput").value, lastTextResult, lastTextStatus]
+    ]);
+  }
+
+  const maxColumns = Math.max(csvData.headers.length, ...csvData.rows.map(row => row.length));
+  const headers = csvData.headers.slice();
+  while (headers.length < maxColumns) headers.push(`ExtraColumn${headers.length + 1}`);
+
+  const outputHeaders = headers.slice();
+  const resultHeader = uniqueHeader("ProcessedResult", outputHeaders);
+  const statusHeader = uniqueHeader("ProcessingStatus", outputHeaders);
+
+  const outputRows = [outputHeaders];
+  csvData.rows.forEach((row, index) => {
+    const original = row.slice();
+    while (original.length < maxColumns) original.push("");
+
+    const processed = rowResults.get(index);
+    const status = processed
+      ? processed.status
+      : selectedRows.has(index) ? "Not processed" : "Not selected";
+
+    outputRows.push([
+      ...original,
+      processed ? processed.result : "",
+      status
+    ]);
+  });
+
+  // The two added header names are appended after all original columns.
+  outputRows[0] = [...headers, resultHeader, statusHeader];
+  return makeCsv(outputRows);
+}
+
+function buildTxtDownload() {
+  if ($("inputMode").value !== "csv" || !csvData) return lastTextResult;
+
+  return Array.from(rowResults.entries())
+    .sort((a, b) => a[0] - b[0])
+    .map(([index, record]) =>
+      `MessageID: ${record.id || selectedId(index)}\n` +
+      `Status: ${record.status}\n\n` +
+      `Original:\n${record.original}\n\n` +
+      `Result:\n${record.result}`
+    )
+    .join("\n\n--------------------\n\n");
+}
+
+function downloadFile(content, name, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+$("runButton").addEventListener("click", runOperation);
+
+$("copyButton").addEventListener("click", async () => {
+  const text = buildTxtDownload();
+  if (!text) {
+    setError("There are no results to copy.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const temporary = document.createElement("textarea");
+    temporary.value = text;
+    document.body.appendChild(temporary);
+    temporary.select();
+    document.execCommand("copy");
+    temporary.remove();
+  }
+});
+
+$("downloadCsvButton").addEventListener("click", () => {
+  downloadFile(buildCsvDownload(), "dd-cipher-results.csv", "text/csv;charset=utf-8");
+});
+
+$("downloadTxtButton").addEventListener("click", () => {
+  downloadFile(buildTxtDownload(), "dd-cipher-results.txt", "text/plain;charset=utf-8");
+});
+
+function clearAll() {
+  $("fileInput").value = "";
+  $("fileInfo").textContent = "No file loaded. You can type or paste text below.";
+  $("inputMode").value = "text";
+  $("textInput").value = "";
+  $("manualMessageId").value = "";
+  $("vigKey").value = "";
+  $("aesKey").value = "";
+  $("aadMode").value = "none";
+  $("action").value = "decrypt";
+  $("cipher").value = "auto";
+  csvData = null;
+  selectedRows = new Set();
+  rowResults = new Map();
+  lastTextResult = "";
+  lastTextStatus = "";
+  clearChildren($("rowPickerBody"));
+  clearChildren($("resultBody"));
+  $("outputPanel").hidden = true;
+  setError("");
+  updateMode();
+  updateCipherControls();
+  chartData = null;
+  drawChart();
+}
+
+$("clearButton").addEventListener("click", clearAll);
+
+function letterPercentages(text) {
+  const counts = Array(26).fill(0);
+  let total = 0;
+  for (const character of String(text).toUpperCase()) {
+    const code = character.charCodeAt(0);
+    if (code >= 65 && code <= 90) {
+      counts[code - 65]++;
+      total++;
+    }
+  }
+  return counts.map(count => total ? count * 100 / total : 0);
+}
+
+function drawChart() {
+  const canvas = $("frequencyChart");
+  const rect = canvas.getBoundingClientRect();
+  const width = Math.max(320, rect.width || 800);
+  const height = 330;
+  const scale = window.devicePixelRatio || 1;
+
+  canvas.width = Math.round(width * scale);
+  canvas.height = Math.round(height * scale);
+  const context = canvas.getContext("2d");
+  context.setTransform(scale, 0, 0, scale, 0, 0);
+  context.clearRect(0, 0, width, height);
+  context.fillStyle = "#fff";
+  context.fillRect(0, 0, width, height);
+  context.font = "12px system-ui, sans-serif";
+
+  if (!chartData) {
+    context.fillStyle = "#596579";
+    context.fillText("Run Vigenère encryption to show the A–Z frequency comparison.", 16, 28);
+    return;
+  }
+
+  const before = letterPercentages(chartData.before);
+  const after = letterPercentages(chartData.after);
+  const maximum = Math.max(2, ...before, ...after);
+  const maxY = Math.ceil(maximum * 1.15);
+  const left = 42, right = 12, top = 48, bottom = 42;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+
+  context.fillStyle = "#2457a7";
+  context.fillRect(left, 15, 12, 12);
+  context.fillStyle = "#172033";
+  context.fillText("Before", left + 17, 26);
+  context.fillStyle = "#e58a24";
+  context.fillRect(left + 90, 15, 12, 12);
+  context.fillStyle = "#172033";
+  context.fillText("After Vigenère", left + 107, 26);
+
+  context.strokeStyle = "#d7deea";
+  context.fillStyle = "#596579";
+  context.textAlign = "right";
+  for (let tick = 0; tick <= 4; tick++) {
+    const value = maxY * tick / 4;
+    const y = top + plotHeight - plotHeight * tick / 4;
+    context.beginPath();
+    context.moveTo(left, y);
+    context.lineTo(width - right, y);
+    context.stroke();
+    context.fillText(`${value.toFixed(1)}%`, left - 5, y + 4);
+  }
+
+  const groupWidth = plotWidth / 26;
+  const barWidth = Math.max(2, Math.min(10, groupWidth * 0.28));
+  context.textAlign = "center";
+
+  for (let i = 0; i < 26; i++) {
+    const x = left + i * groupWidth;
+    const firstHeight = before[i] / maxY * plotHeight;
+    const secondHeight = after[i] / maxY * plotHeight;
+
+    context.fillStyle = "#2457a7";
+    context.fillRect(x + groupWidth * 0.17, top + plotHeight - firstHeight, barWidth, firstHeight);
+    context.fillStyle = "#e58a24";
+    context.fillRect(x + groupWidth * 0.56, top + plotHeight - secondHeight, barWidth, secondHeight);
+
+    context.fillStyle = "#172033";
+    context.fillText(String.fromCharCode(65 + i), x + groupWidth / 2, height - 15);
+  }
+}
+
+window.addEventListener("resize", drawChart);
+updateMode();
+updateCipherControls();
+drawChart();
+</script>
+</body>
+</html>
